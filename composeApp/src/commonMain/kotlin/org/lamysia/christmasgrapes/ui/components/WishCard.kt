@@ -2,9 +2,7 @@ package org.lamysia.christmasgrapes.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,11 +30,12 @@ fun WishCard(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
             dismissOnBackPress = true,
-            dismissOnClickOutside = true
+            dismissOnClickOutside = true,
+            usePlatformDefaultWidth = false
         )
     ) {
         Box(
-            modifier = modifier.fillMaxWidth(0.95f),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
             // Postcard arka plan
@@ -45,7 +44,6 @@ fun WishCard(
                 contentDescription = "Postcard",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1.3f) // Kartpostal oranını ekrana göre ayarladık
             )
 
             // Dilek metni
@@ -53,13 +51,13 @@ fun WishCard(
                 text = wish,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyLarge.copy(
                     fontFamily = FontFamily.Monospace,
-                    fontSize = 20.sp // Metin boyutunu biraz küçülttük
+                    fontSize = 24.sp
                 ),
                 color = AppColors.Primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(0.85f)
+                    .padding(48.dp)
+                    .fillMaxWidth(0.9f)
             )
         }
     }
