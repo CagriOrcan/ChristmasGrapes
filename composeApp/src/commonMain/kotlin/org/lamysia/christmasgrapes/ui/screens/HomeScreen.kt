@@ -1,65 +1,101 @@
 package org.lamysia.christmasgrapes.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.lamysia.christmasgrapes.model.Wish
-import org.lamysia.christmasgrapes.ui.components.GrapeItem
-import org.lamysia.christmasgrapes.ui.components.PremiumBanner
-import org.lamysia.christmasgrapes.ui.theme.AppColors
+import christmasgrapes.composeapp.generated.resources.Res
+import christmasgrapes.composeapp.generated.resources.grapes
+import christmasgrapes.composeapp.generated.resources.snowy
+import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
-@Preview
+
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(
-    wishes: List<Wish>,
     isPremium: Boolean = false,
-    onWishClick: (Wish) -> Unit = {},
-    onUpgradeToPremium: () -> Unit = {}
+    onUpgradeToPremium: () -> Unit = {},
+    onGenerateWish: () -> Unit = {},
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Title
-        Text(
-            text = "Christmas Grapes",
-            style = MaterialTheme.typography.headlineMedium,
-            color = AppColors.Primary,
-            modifier = Modifier.padding(bottom = 16.dp)
+    var isShaking by remember { mutableStateOf(false) }
+    val shakeController = rememberInfiniteTransition()
+    // Shake animation
+    val shake by shakeController.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(100),
+            repeatMode = RepeatMode.Reverse
         )
+    )
 
-        // Premium Banner - if not premium
-        if (!isPremium) {
-            PremiumBanner(
-                onUpgradeClick = onUpgradeToPremium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-        }
-
-        // Grapes Grid
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(wishes) { wish ->
-                GrapeItem(
-                    wish = wish,
-                    onClick = { onWishClick(wish) }
-                )
-            }
+    LaunchedEffect(isShaking) {
+        if (isShaking) {
+            onGenerateWish() // Shake bittikten sonra dileği göster
+            delay(500) // 500ms shake süresi
+            isShaking = false
         }
     }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Background Image
+        Image(
+            painter = painterResource(Res.drawable.snowy),
+            contentDescription = "Snowy Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        // Grapes Image with Shake Effect
+        Image(
+            painter = painterResource(Res.drawable.grapes),
+            contentDescription = "Grapes",
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(0.9f)
+                .aspectRatio(1f)
+                .padding(16.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    isShaking = true
+                }
+                .graphicsLayer {
+                    if (isShaking) {
+                        rotationZ = shake * 5f // Adjust shake intensity
+                        translationX = shake * 5f
+                    }
+                }
+        )
+    }
+}
+
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen()
 }

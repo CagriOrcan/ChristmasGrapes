@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation("androidx.appcompat:appcompat:1.6.1")
             implementation("com.google.android.material:material:1.11.0")
+            implementation(compose.components.uiToolingPreview)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -50,8 +51,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)
+            implementation(libs.openai.client)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

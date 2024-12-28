@@ -9,12 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.screens.HomeScreen
 import org.lamysia.christmasgrapes.ui.screens.PremiumScreen
 import org.lamysia.christmasgrapes.ui.screens.WishesScreen
 
+@Preview
 @Composable
 fun ChristmasGrapesApp() {
     var wishes by remember { mutableStateOf(
@@ -39,9 +41,7 @@ fun ChristmasGrapesApp() {
         Box(modifier = Modifier.padding(paddingValues)) {
             when (currentScreen) {
                 0 -> HomeScreen(
-                    wishes = wishes,
                     isPremium = isPremium,
-                    onWishClick = { wish -> selectedWish = wish },
                     onUpgradeToPremium = { isPremium = true }
                 )
                 1 -> if (isPremium) {

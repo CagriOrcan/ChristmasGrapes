@@ -10,4 +10,5 @@ object AppColors {
     val Error = Color(0xFFCB0B0A)
     val PrimaryDark = Color(0xFF8E0413)
     val Surface = Color(0xFFDCDFE5)
+    val Transparent = Color(0x0FFFFFF)
 }
