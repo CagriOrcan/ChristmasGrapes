@@ -81,6 +81,8 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.navigation.compose)
+
+            implementation(libs.openai.client.v382)
         }
 
         desktopMain.dependencies {
@@ -133,6 +135,7 @@ sqldelight {
 dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.transport.runtime)
     debugImplementation(compose.uiTooling)
 }
 

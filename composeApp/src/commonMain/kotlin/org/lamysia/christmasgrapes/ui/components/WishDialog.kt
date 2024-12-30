@@ -49,8 +49,10 @@ fun WishDialog(
         )
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp, bottom = 48.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(Res.drawable.postcard),

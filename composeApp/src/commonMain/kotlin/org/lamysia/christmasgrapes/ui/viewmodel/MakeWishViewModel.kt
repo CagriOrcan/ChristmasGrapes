@@ -2,16 +2,21 @@ package org.lamysia.christmasgrapes.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.lamysia.christmasgrapes.data.OpenAIRepository
 import org.lamysia.christmasgrapes.data.WishRepository
 import org.lamysia.christmasgrapes.model.Wish
 
 class MakeWishViewModel: ViewModel() {
     private val repository = WishRepository()
+    private val openAIRepository = OpenAIRepository()
 
     private val _wishes = MutableStateFlow<List<Wish>>(emptyList())
     val wishes: StateFlow<List<Wish>> = _wishes.asStateFlow()
@@ -24,6 +29,22 @@ class MakeWishViewModel: ViewModel() {
 
     init {
         loadWishes()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        openAIRepository.close()
+    }
+
+    suspend fun generateWish(): String {
+        return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+            try {
+                _loading.value = true
+                openAIRepository.generateWish()
+            } finally {
+                _loading.value = false
+            }
+        }
     }
 
     private fun loadWishes() {

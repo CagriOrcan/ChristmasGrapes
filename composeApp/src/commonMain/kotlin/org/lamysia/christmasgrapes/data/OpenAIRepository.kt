@@ -1,6 +1,7 @@
 package org.lamysia.christmasgrapes.data
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -16,15 +17,26 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlin.coroutines.cancellation.CancellationException
 
 class OpenAIRepository {
     private val client = HttpClient {
         install(ContentNegotiation) {
             json()
         }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30000
+            connectTimeoutMillis = 30000
+            socketTimeoutMillis = 30000
+        }
+
     }
 
-    private val apiKey = "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"
+    fun close() {
+        client.close()
+    }
+
+    private val apiKey = "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"
     private val baseUrl = "https://api.openai.com/v1/chat/completions"
 
     suspend fun generateWish(): String = withContext(Dispatchers.IO) {
@@ -32,30 +44,34 @@ class OpenAIRepository {
             val request = OpenAIRequest(
                 model = "gpt-3.5-turbo",
                 messages = listOf(
-                    Message("system", "You are wish generator."),
-                    Message("user", "You know the tradition of eating 12 grapes on New Year's Eve. You make a wish for each month and eat grapes, and you will create a wish for people for each grape. And you will wish for it firsthand as if you were making a wish yourself. you generate one wish in each time. ")
+                    Message("system", "You are wish generator.You know the tradition of eating 12 grapes on New Year's Eve. You make a wish for each month and eat grapes, and you will create a wish for people for each grape. And you will wish for it firsthand as if you were making a wish yourself. you generate one wish in each time. Wish will be one word"),
+                    Message("user", "Generate a wish for me")
                 ),
                 max_tokens = 100,
                 temperature = 0.7
             )
 
-            val response = client.post(baseUrl) {
+            client.post(baseUrl) {
                 headers {
                     append("Authorization", "Bearer $apiKey")
+                    append("Content-Type", "application/json")
                 }
                 setBody(request)
+            }.let { response ->
+                if (response.status.isSuccess()) {
+                    val jsonResponse = Json.decodeFromString<JsonObject>(response.bodyAsText())
+                    jsonResponse["choices"]?.jsonArray?.get(0)?.jsonObject
+                        ?.get("message")?.jsonObject
+                        ?.get("content")?.jsonPrimitive?.content?.trim()
+                        ?: throw Exception("Invalid response format")
+                } else {
+                    throw Exception("API call failed: ${response.status}")
+                }
             }
-
-            if (response.status.isSuccess()) {
-                val jsonResponse = Json.decodeFromString<JsonObject>(response.bodyAsText())
-                val content = jsonResponse["choices"]?.jsonArray?.get(0)?.jsonObject
-                    ?.get("message")?.jsonObject
-                    ?.get("content")?.jsonPrimitive?.content
-                content?.trim() ?: throw Exception("Invalid response format")
-            } else {
-                throw Exception("API call failed: ${response.status}")
-            }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
+            e.printStackTrace()
             listOf(
                 "May all your dreams come true in the new year!",
                 "Wishing you success and fulfillment in everything you do.",

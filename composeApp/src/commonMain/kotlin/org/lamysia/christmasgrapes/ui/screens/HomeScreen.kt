@@ -58,10 +58,10 @@ fun HomeScreen(
 
     LaunchedEffect(isShaking) {
         if (isShaking) {
-            delay(500)
-            isShaking = false
+            delay(300)
             val generatedWish = openAIRepository.generateWish()
             onGenerateWish(generatedWish, isPremium)
+            isShaking = false
         }
     }
 

@@ -160,7 +160,7 @@ fun MainScreen(
 
         LaunchedEffect(Unit) {
             try {
-                generatedWish = openAIRepository.generateWish()
+                generatedWish = viewModel.generateWish()
             } catch (e: Exception) {
                 error = e.message
             } finally {
