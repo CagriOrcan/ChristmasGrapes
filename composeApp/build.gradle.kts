@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -38,9 +40,14 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("androidx.appcompat:appcompat:1.6.1")
+            implementation(libs.androidx.appcompat.v161)
             implementation("com.google.android.material:material:1.11.0")
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.ktor.client.android)
+            implementation(libs.android.driver)
+            implementation(libs.ktor.client.android.v237)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -51,14 +58,38 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.openai.client)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.runtime)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.koin.core)
+            implementation(libs.gotrue.kt)
+            implementation(libs.postgrest.kt)
+            implementation(libs.ktor.client.core.v237)
+            implementation(libs.kotlinx.coroutines.core.v173)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.lifecycle.viewmodel.compose)
+            implementation(libs.kotlinx.coroutines.core)
+
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.lifecycle.viewmodel)
+            implementation(libs.navigation.compose)
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation(libs.native.driver)
         }
     }
 }
@@ -87,6 +118,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+sqldelight {
+    databases {
+        create("WishDatabase") {
+            packageName.set("org.lamysia.christmasgrapes.db")
+        }
     }
 }
 

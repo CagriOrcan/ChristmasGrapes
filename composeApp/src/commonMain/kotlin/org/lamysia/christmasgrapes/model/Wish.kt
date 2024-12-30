@@ -1,14 +1,15 @@
 package org.lamysia.christmasgrapes.model
 
-data class Wish(
-    val id: Int,
-    val text: String,
-    val isLocked: Boolean = false,
-    val dateCreated: String = getCurrentDate(),
-    val hasWish: Boolean = false
-)
+import kotlinx.datetime.Clock
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-private fun getCurrentDate(): String {
-    // Platform spesifik tarih formatlaması için daha sonra expect/actual kullanacağız
-    return "2024-01-01" // Şimdilik sabit bir değer
-}
+@Serializable
+data class Wish(
+    val id: Int? = null,
+    val text: String,
+    @SerialName("created_at")
+    val createdAt: String = Clock.System.now().toString(),
+    @SerialName("is_premium")
+    val isPremium: Boolean = false
+)

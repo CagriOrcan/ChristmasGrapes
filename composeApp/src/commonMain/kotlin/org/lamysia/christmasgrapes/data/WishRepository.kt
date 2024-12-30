@@ -1,37 +1,53 @@
 package org.lamysia.christmasgrapes.data
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Count
+import io.github.jan.supabase.postgrest.query.FilterOperator
+import io.github.jan.supabase.postgrest.query.Order
 import org.lamysia.christmasgrapes.model.Wish
 
 class WishRepository {
-    private val _wishes = MutableStateFlow<List<Wish>>(emptyList())
-    private var _isPremium = MutableStateFlow(false)
+    private val client = SupabaseClient.client
 
-    init {
-        // Initialize with 12 empty grapes
-        _wishes.value = List(12) { index ->
-            Wish(
-                id = index,
-                text = "",
-                isLocked = index >= 3,
-                hasWish = false
-            )
-        }
+    suspend fun insertWish(text: String, isPremium: Boolean): Result<Wish> = runCatching {
+        val wish = Wish(
+            text = text,
+            isPremium = isPremium
+        )
+        client.postgrest["wishes"]
+            .insert(wish)
+            .decodeSingle<Wish>()
     }
 
-    fun getWishes(): StateFlow<List<Wish>> = _wishes.asStateFlow()
-    fun isPremium(): StateFlow<Boolean> = _isPremium.asStateFlow()
-
-    fun updateWish(id: Int, text: String) {
-        _wishes.value = _wishes.value.map {
-            if (it.id == id) it.copy(text = text, hasWish = text.isNotEmpty()) else it
-        }
+    suspend fun getAllWishes(): Result<List<Wish>> = runCatching {
+        client.postgrest["wishes"]
+            .select{
+                order("created_at", Order.DESCENDING)
+            }
+            .decodeList<Wish>()
     }
 
-    fun upgradeToPermium() {
-        _isPremium.value = true
-        _wishes.value = _wishes.value.map { it.copy(isLocked = false) }
+    suspend fun getFreeWishes(): Result<List<Wish>> = runCatching {
+        client.postgrest["wishes"]
+            .select {
+                filter("is_premium", FilterOperator.EQ, false)
+            }
+            .decodeList<Wish>()
+    }
+
+    suspend fun deleteWish(id: Int): Result<Unit> = runCatching {
+        client.postgrest["wishes"]
+            .delete {
+                filter("id", FilterOperator.EQ, id)
+            }
+    }
+
+    suspend fun getFreeWishCount(): Result<Int> = runCatching {
+        client.postgrest["wishes"]
+            .select(count = Count.EXACT) {
+                filter("is_premium", FilterOperator.EQ, false)
+            }.let { result ->
+                (result.count() ?: 0L).toInt()
+            }
     }
 }
