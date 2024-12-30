@@ -30,17 +30,22 @@ import christmasgrapes.composeapp.generated.resources.snowy
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.lamysia.christmasgrapes.data.OpenAIRepository
+import org.lamysia.christmasgrapes.model.Wish
+import org.lamysia.christmasgrapes.ui.theme.AppTheme
 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(
+    wishes: List<Wish>,
     isPremium: Boolean = false,
-    onUpgradeToPremium: () -> Unit = {},
-    onGenerateWish: () -> Unit = {},
+    onGenerateWish: (String, Boolean) -> Unit = { _, _ -> }
 ) {
     var isShaking by remember { mutableStateOf(false) }
     val shakeController = rememberInfiniteTransition()
+    val openAIRepository = remember { OpenAIRepository() }
 
     val shake by shakeController.animateFloat(
         initialValue = 0f,
@@ -55,7 +60,8 @@ fun HomeScreen(
         if (isShaking) {
             delay(500)
             isShaking = false
-            onGenerateWish()
+            val generatedWish = openAIRepository.generateWish()
+            onGenerateWish(generatedWish, isPremium)
         }
     }
 
@@ -95,7 +101,20 @@ fun HomeScreen(
     }
 }
 
+@Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    val sampleWishes = listOf(
+        Wish(id = 0, text = "First wish", isPremium = false),
+        Wish(id = 1, text = "Second wish", isPremium = false),
+        Wish(id = 2, text = "Premium wish", isPremium = true)
+    )
+
+    AppTheme {
+        HomeScreen(
+            wishes = sampleWishes,
+            isPremium = false,
+            onGenerateWish = { _, _ -> }
+        )
+    }
 }

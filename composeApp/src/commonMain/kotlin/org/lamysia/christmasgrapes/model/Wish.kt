@@ -11,5 +11,6 @@ data class Wish(
     @SerialName("created_at")
     val createdAt: String = Clock.System.now().toString(),
     @SerialName("is_premium")
-    val isPremium: Boolean = false
+    val isPremium: Boolean = true,
+    val hasWish: Boolean = text.isNotEmpty()
 )

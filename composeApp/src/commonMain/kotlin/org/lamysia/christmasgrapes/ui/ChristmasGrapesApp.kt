@@ -24,7 +24,6 @@ fun ChristmasGrapesApp() {
             Wish(
                 id = index,
                 text = "",
-                isLocked = index >= 3,
                 hasWish = false
             )
         }
@@ -42,18 +41,19 @@ fun ChristmasGrapesApp() {
             when (currentScreen) {
                 0 -> HomeScreen(
                     isPremium = isPremium,
-                    onUpgradeToPremium = { isPremium = true }
+                    wishes = wishes,
+                    onGenerateWish = { text, isPrem ->
+                        val newWish = Wish(
+                            id = wishes.size,
+                            text = text,
+                            isPremium = isPrem,
+                            hasWish = true
+                        )
+                        selectedWish = newWish
+                    }
                 )
                 1 -> if (isPremium) {
-                    WishesScreen(
-                        wishes = wishes.filter { it.hasWish },
-                        onDeleteWish = { id ->
-                            wishes = wishes.map { wish ->
-                                if (wish.id == id) wish.copy(text = "", hasWish = false)
-                                else wish
-                            }
-                        }
-                    )
+                    WishesScreen() // ViewModel içinden wishes'i alacak
                 } else {
                     PremiumScreen(
                         onUpgradeClick = { isPremium = true }
@@ -67,9 +67,9 @@ fun ChristmasGrapesApp() {
         WishDialog(
             wish = wish,
             onDismiss = { selectedWish = null },
-            onSave = { text ->
+            onSave = { savedWish ->
                 wishes = wishes.map {
-                    if (it.id == wish.id) it.copy(text = text) else it
+                    if (it.id == savedWish.id) savedWish else it
                 }
                 selectedWish = null
             }

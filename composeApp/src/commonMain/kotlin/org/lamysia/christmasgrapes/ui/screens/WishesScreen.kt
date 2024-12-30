@@ -1,117 +1,88 @@
 package org.lamysia.christmasgrapes.ui.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
+import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
 
 @Composable
 fun WishesScreen(
-    wishes: List<Wish> = emptyList(),
-    onDeleteWish: (Int) -> Unit = {}
+    modifier: Modifier = Modifier,
+    viewModel: MakeWishViewModel = viewModel()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Header
-        Text(
-            text = "My Wishes",
-            style = MaterialTheme.typography.headlineMedium,
-            color = AppColors.Primary,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+    val wishes by viewModel.wishes.collectAsState()
+    val loading by viewModel.loading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val canAddFreeWish by viewModel.canAddFreeWish.collectAsState(initial = false)
 
-        if (wishes.isEmpty()) {
-            EmptyWishesContent()
-        } else {
-            WishesList(
-                wishes = wishes,
-                onDeleteWish = onDeleteWish
-            )
-        }
-    }
-}
-
-@Composable
-private fun EmptyWishesContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = null,
-                tint = AppColors.Primary,
-                modifier = Modifier.size(64.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "No wishes yet",
-                style = MaterialTheme.typography.titleLarge,
+    Box(modifier = modifier.fillMaxSize()) {
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
                 color = AppColors.Primary
             )
-            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(wishes) { wish ->
+                WishItem(
+                    wish = wish,
+                    onDelete = { viewModel.deleteWish(wish.id!!) }
+                )
+            }
+        }
+
+        error?.let { errorMessage ->
             Text(
-                text = "Make your first wish by clicking the button below",
-                style = MaterialTheme.typography.bodyLarge,
-                color = AppColors.Secondary,
-                textAlign = TextAlign.Center
+                text = errorMessage,
+                color = AppColors.Error,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
             )
         }
     }
 }
 
-@Composable
-private fun WishesList(
-    wishes: List<Wish>,
-    onDeleteWish: (Int) -> Unit
-) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(
-            items = wishes,
-            key = { it.id }
-        ) { wish ->
-            WishItem(
-                wish = wish,
-                onDelete = { onDeleteWish(wish.id) }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WishItem(
     wish: Wish,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.Background
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
         )
     ) {
         Row(
@@ -121,31 +92,23 @@ private fun WishItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = wish.text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = wish.dateCreated,
+                    text = wish.createdAt,
                     style = MaterialTheme.typography.bodySmall,
                     color = AppColors.Secondary
                 )
             }
 
-            IconButton(
-                onClick = onDelete,
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = AppColors.Error
-                )
-            ) {
+            IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete wish"
+                    contentDescription = "Delete wish",
+                    tint = AppColors.Error
                 )
             }
         }

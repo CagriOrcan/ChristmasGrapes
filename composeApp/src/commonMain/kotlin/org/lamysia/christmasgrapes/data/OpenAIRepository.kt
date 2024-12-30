@@ -17,21 +17,20 @@ class OpenAIRepository {
 }*/
 
 class OpenAIRepository {
-    // Şimdilik sabit dilekler döndürelim
     private val wishes = listOf(
         "May all your dreams come true in the new year!",
-        "Wishing you joy, peace, and prosperity in the coming year.",
-        "May this year bring you endless opportunities and happiness.",
-        "Here's to new adventures and beautiful moments ahead!",
-        "May your year be filled with magical moments and wonderful surprises.",
         "Wishing you success and fulfillment in everything you do.",
+        "May your path be bright and your journey be filled with joy.",
+        "Here's to new beginnings and beautiful moments ahead.",
         "May this year bring you closer to all your dreams.",
-        "Here's to a year of growth, learning, and achievement.",
-        "May your path be bright and your burdens light.",
-        "Wishing you 12 months of success, 52 weeks of laughter, and 365 days of happiness!"
+        "Wishing you 12 months of success, 52 weeks of laughter, and 365 days of happiness!",
+        "May you find happiness in every moment of the coming year.",
+        "Here's to a year filled with new adventures and achievements.",
+        "May your year be as bright as the stars and as sweet as grapes!",
+        "Wishing you peace, love, and prosperity in the new year."
     )
 
-    suspend fun generateWish(): String {
+    fun generateWish(): String {
         return wishes.random()
     }
 }
