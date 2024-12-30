@@ -15,6 +15,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -154,6 +155,19 @@ fun MainScreen(
     }
 
     if (showWishCard) {
+        var isLoading by remember { mutableStateOf(true) }
+        var error by remember { mutableStateOf<String?>(null) }
+
+        LaunchedEffect(Unit) {
+            try {
+                generatedWish = openAIRepository.generateWish()
+            } catch (e: Exception) {
+                error = e.message
+            } finally {
+                isLoading = false
+            }
+        }
+
         WishDialog(
             wish = Wish(
                 id = null,
@@ -161,6 +175,8 @@ fun MainScreen(
                 isPremium = isPremium,
                 hasWish = true
             ),
+            isLoading = isLoading,
+            error = error,
             onDismiss = { showWishCard = false },
             onSave = { wish ->
                 viewModel.addWish(wish.text, isPremium)
