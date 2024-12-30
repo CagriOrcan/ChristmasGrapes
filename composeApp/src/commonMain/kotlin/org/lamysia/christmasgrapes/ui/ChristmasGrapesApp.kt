@@ -15,6 +15,7 @@ import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.screens.HomeScreen
 import org.lamysia.christmasgrapes.ui.screens.PremiumScreen
 import org.lamysia.christmasgrapes.ui.screens.WishesScreen
+import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
 
 @Preview
 @Composable
@@ -50,7 +51,8 @@ fun ChristmasGrapesApp() {
                             hasWish = true
                         )
                         selectedWish = newWish
-                    }
+                    },
+                    viewModel = MakeWishViewModel()
                 )
                 1 -> if (isPremium) {
                     WishesScreen() // ViewModel içinden wishes'i alacak

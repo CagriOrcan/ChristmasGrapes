@@ -31,9 +31,9 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.lamysia.christmasgrapes.data.OpenAIRepository
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppTheme
+import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
 
 
 @OptIn(ExperimentalResourceApi::class)
@@ -41,11 +41,11 @@ import org.lamysia.christmasgrapes.ui.theme.AppTheme
 fun HomeScreen(
     wishes: List<Wish>,
     isPremium: Boolean = false,
+    viewModel: MakeWishViewModel,
     onGenerateWish: (String, Boolean) -> Unit = { _, _ -> }
 ) {
     var isShaking by remember { mutableStateOf(false) }
     val shakeController = rememberInfiniteTransition()
-    val openAIRepository = remember { OpenAIRepository() }
 
     val shake by shakeController.animateFloat(
         initialValue = 0f,
@@ -59,9 +59,12 @@ fun HomeScreen(
     LaunchedEffect(isShaking) {
         if (isShaking) {
             delay(300)
-            val generatedWish = openAIRepository.generateWish()
-            onGenerateWish(generatedWish, isPremium)
-            isShaking = false
+            try {
+                val generatedWish = viewModel.generateWish()  // ViewModel üzerinden isteği atalım
+                onGenerateWish(generatedWish, isPremium)
+            } finally {
+                isShaking = false
+            }
         }
     }
 
@@ -114,7 +117,8 @@ fun HomeScreenPreview() {
         HomeScreen(
             wishes = sampleWishes,
             isPremium = false,
-            onGenerateWish = { _, _ -> }
+            onGenerateWish = { _, _ -> },
+            viewModel = MakeWishViewModel()
         )
     }
 }

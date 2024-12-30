@@ -15,7 +15,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.lamysia.christmasgrapes.data.OpenAIRepository
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.screens.HomeScreen
@@ -43,7 +41,6 @@ fun MainScreen(
     var showWishCard by remember { mutableStateOf(false) }
     var generatedWish by remember { mutableStateOf("") }
     val wishes by viewModel.wishes.collectAsState()
-    val openAIRepository = remember { OpenAIRepository() }
 
     Scaffold(
         bottomBar = {
@@ -133,7 +130,8 @@ fun MainScreen(
                     onGenerateWish = { wishText, isPrem ->
                         generatedWish = wishText
                         showWishCard = true
-                    }
+                    },
+                    viewModel = viewModel
                 )
                 1 -> if (isPremium) {
                     MakeWishScreen(
@@ -155,29 +153,18 @@ fun MainScreen(
     }
 
     if (showWishCard) {
-        var isLoading by remember { mutableStateOf(true) }
-        var error by remember { mutableStateOf<String?>(null) }
-
-        LaunchedEffect(Unit) {
-            try {
-                generatedWish = viewModel.generateWish()
-            } catch (e: Exception) {
-                error = e.message
-            } finally {
-                isLoading = false
-            }
-        }
-
         WishDialog(
             wish = Wish(
                 id = null,
-                text = generatedWish,
+                text = generatedWish,  // HomeScreen'den gelen wish'i kullan
                 isPremium = isPremium,
                 hasWish = true
             ),
-            isLoading = isLoading,
-            error = error,
-            onDismiss = { showWishCard = false },
+            isLoading = false,  // İstek zaten tamamlandı
+            error = null,
+            onDismiss = {
+                showWishCard = false
+            },
             onSave = { wish ->
                 viewModel.addWish(wish.text, isPremium)
                 showWishCard = false
