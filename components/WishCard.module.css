@@ -1,0 +1,73 @@
+.cardContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.grapeIcon {
+  font-size: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.grapeIcon:hover {
+  transform: scale(1.1);
+}
+
+.wishCard {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
+  max-width: 400px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.cardHeader h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+}
+
+.closeButton:hover {
+  color: #333;
+}
+
+.wishList {
+  padding: 15px 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.wishItem {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+  line-height: 1.4;
+}
+
+.wishItem:last-child {
+  border-bottom: none;
+} 
