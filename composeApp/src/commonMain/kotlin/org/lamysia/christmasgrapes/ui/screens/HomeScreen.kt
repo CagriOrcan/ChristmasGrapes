@@ -41,7 +41,7 @@ fun HomeScreen(
 ) {
     var isShaking by remember { mutableStateOf(false) }
     val shakeController = rememberInfiniteTransition()
-    // Shake animation
+
     val shake by shakeController.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -53,9 +53,9 @@ fun HomeScreen(
 
     LaunchedEffect(isShaking) {
         if (isShaking) {
-            onGenerateWish() // Shake bittikten sonra dileği göster
-            delay(500) // 500ms shake süresi
+            delay(500)
             isShaking = false
+            onGenerateWish()
         }
     }
 
