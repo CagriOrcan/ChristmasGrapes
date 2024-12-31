@@ -51,7 +51,7 @@ import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel
 @Composable
 fun MainScreen(
     viewModel: MakeWishViewModel = viewModel(),
-    isPremium: Boolean = true
+    isPremium: Boolean = false
 ) {
     val premiumViewModel = remember { PremiumViewModel() }
     var selectedItem by remember { mutableStateOf(0) }
@@ -61,7 +61,7 @@ fun MainScreen(
     val wishes by viewModel.wishes.collectAsState()
 
     val options = remember {
-        PaywallOptions(dismissRequest = { TODO("Handle dismiss") }) {
+        PaywallOptions(dismissRequest = { showPremiumScreen = false }) {
             shouldDisplayDismissButton = true
         }
     }
@@ -180,8 +180,13 @@ fun MainScreen(
                     1 -> if (isPremium) {
                         MakeWishScreen(
                             isPremium = isPremium,
-                            onWishMade = { text ->
-                                viewModel.addWish(text, isPremium)
+                            onWishMade = { wish ->
+                                viewModel.addWish(
+                                    text = wish.text,
+                                    isPremium = wish.isPremium,
+                                    assignedMonth = wish.assignedMonth
+                                )
+
                             }
                         )
                     }

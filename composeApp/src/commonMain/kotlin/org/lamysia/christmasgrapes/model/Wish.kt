@@ -12,5 +12,9 @@ data class Wish(
     val createdAt: String = Clock.System.now().toString(),
     @SerialName("is_premium")
     val isPremium: Boolean = true,
-    val hasWish: Boolean = text.isNotEmpty()
+    val hasWish: Boolean = text.isNotEmpty(),
+    @SerialName("assigned_month")
+    val assignedMonth: Int? = 1,
+    @SerialName("is_completed")
+    val isCompleted: Boolean = false
 )

@@ -65,11 +65,11 @@ class MakeWishViewModel: ViewModel() {
         }
     }
 
-    fun addWish(text: String, isPremium: Boolean) {
+    fun addWish(text: String, isPremium: Boolean, assignedMonth: Int? = 1) {
         viewModelScope.launch {
             _loading.value = true
             try {
-                repository.insertWish(text, isPremium)
+                repository.insertWish(text, isPremium, assignedMonth)
                     .onSuccess {
                         loadWishes()
                         _error.value = null
@@ -88,6 +88,42 @@ class MakeWishViewModel: ViewModel() {
             _loading.value = true
             try {
                 repository.deleteWish(id)
+                    .onSuccess {
+                        loadWishes()
+                        _error.value = null
+                    }
+                    .onFailure {
+                        _error.value = it.message
+                    }
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun updateWishMonth(wishId: Int, month: Int) {
+        viewModelScope.launch {
+            _loading.value = true
+            try {
+                repository.updateWishMonth(wishId, month)
+                    .onSuccess {
+                        loadWishes()
+                        _error.value = null
+                    }
+                    .onFailure {
+                        _error.value = it.message
+                    }
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun toggleWishCompletion(wishId: Int, isCompleted: Boolean) {
+        viewModelScope.launch {
+            _loading.value = true
+            try {
+                repository.toggleWishCompletion(wishId, isCompleted)
                     .onSuccess {
                         loadWishes()
                         _error.value = null

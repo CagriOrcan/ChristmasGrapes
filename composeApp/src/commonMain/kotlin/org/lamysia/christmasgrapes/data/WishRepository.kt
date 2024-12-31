@@ -9,10 +9,11 @@ import org.lamysia.christmasgrapes.model.Wish
 class WishRepository {
     private val client = SupabaseClient.client
 
-    suspend fun insertWish(text: String, isPremium: Boolean): Result<Wish> = runCatching {
+    suspend fun insertWish(text: String, isPremium: Boolean, assignedMonth: Int? = 1): Result<Wish> = runCatching {
         val wish = Wish(
             text = text,
-            isPremium = isPremium
+            isPremium = isPremium,
+            assignedMonth = assignedMonth
         )
         client.postgrest["wishes"]
             .insert(wish)
@@ -39,6 +40,28 @@ class WishRepository {
         client.postgrest["wishes"]
             .delete {
                 filter("id", FilterOperator.EQ, id)
+            }
+    }
+
+    suspend fun updateWishMonth(wishId: Int, month: Int): Result<Unit> = runCatching {
+        client.postgrest["wishes"]
+            .update(
+                {
+                    set("assigned_month", month)
+                }
+            ) {
+                filter("id", FilterOperator.EQ, wishId)
+            }
+    }
+
+    suspend fun toggleWishCompletion(wishId: Int, isCompleted: Boolean): Result<Unit> = runCatching {
+        client.postgrest["wishes"]
+            .update(
+                {
+                    set("is_completed", isCompleted)
+                }
+            ) {
+                filter("id", FilterOperator.EQ, wishId)
             }
     }
 
