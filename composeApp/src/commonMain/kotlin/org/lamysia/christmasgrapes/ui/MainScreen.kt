@@ -22,27 +22,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.screens.HomeScreen
 import org.lamysia.christmasgrapes.ui.screens.MakeWishScreen
-import org.lamysia.christmasgrapes.ui.screens.PremiumScreen
 import org.lamysia.christmasgrapes.ui.screens.WishesScreen
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
+import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MakeWishViewModel = viewModel(),
-    isPremium: Boolean = true
+    isPremium: Boolean = false
 ) {
+    val premiumViewModel = remember { PremiumViewModel() }
     var selectedItem by remember { mutableStateOf(0) }
     var showWishCard by remember { mutableStateOf(false) }
     var generatedWish by remember { mutableStateOf("") }
+    var showPremiumScreen by remember { mutableStateOf(false) }
     val wishes by viewModel.wishes.collectAsState()
 
-    Scaffold(
+    val options = remember {
+        PaywallOptions(dismissRequest = { TODO("Handle dismiss") }) {
+            shouldDisplayDismissButton = true
+        }
+    }
+
+
+        Scaffold(
         bottomBar = {
             NavigationBar(
                 containerColor = AppColors.Primary,
@@ -58,7 +69,10 @@ fun MainScreen(
                     },
                     label = { Text("Home") },
                     selected = selectedItem == 0,
-                    onClick = { selectedItem = 0 },
+                    onClick = {
+                        selectedItem = 0
+                        showPremiumScreen = false // Premium ekranını kapat
+                    },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = AppColors.Background,
                         unselectedIconColor = AppColors.Surface,
@@ -81,8 +95,9 @@ fun MainScreen(
                     onClick = {
                         if (isPremium) {
                             selectedItem = 1
+                            showPremiumScreen = false
                         } else {
-                            // Premium dialog göster
+                            showPremiumScreen = true
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
@@ -107,8 +122,9 @@ fun MainScreen(
                     onClick = {
                         if (isPremium) {
                             selectedItem = 2
+                            showPremiumScreen = false
                         } else {
-                            // Premium dialog göster
+                            showPremiumScreen = true
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
@@ -121,32 +137,34 @@ fun MainScreen(
                 )
             }
         }
-    ) { paddingValues ->
+    )  { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            when (selectedItem) {
-                0 -> HomeScreen(
-                    wishes = wishes,
-                    isPremium = isPremium,
-                    onGenerateWish = { wishText, isPrem ->
-                        generatedWish = wishText
-                        showWishCard = true
-                    },
-                    viewModel = viewModel
-                )
-                1 -> if (isPremium) {
-                    MakeWishScreen(
+            if (showPremiumScreen) {
+                Paywall(options = options)
+            } else {
+                when (selectedItem) {
+                    0 -> HomeScreen(
+                        wishes = wishes,
                         isPremium = isPremium,
-                        onWishMade = { text ->
-                            viewModel.addWish(text, isPremium)
-                        }
+                        onGenerateWish = { wishText, isPrem ->
+                            generatedWish = wishText
+                            showWishCard = true
+                        },
+                        viewModel = viewModel
                     )
-                } else {
-                    PremiumScreen()
-                }
-                2 -> if (isPremium) {
-                    WishesScreen(viewModel = viewModel)
-                } else {
-                    PremiumScreen()
+
+                    1 -> if (isPremium) {
+                        MakeWishScreen(
+                            isPremium = isPremium,
+                            onWishMade = { text ->
+                                viewModel.addWish(text, isPremium)
+                            }
+                        )
+                    }
+
+                    2 -> if (isPremium) {
+                        WishesScreen(viewModel = viewModel)
+                    }
                 }
             }
         }

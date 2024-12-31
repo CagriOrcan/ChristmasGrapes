@@ -36,8 +36,14 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
-        
-        androidMain.dependencies {
+
+        named { it.lowercase().startsWith("ios") }.configureEach {
+            languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
+        }
+
+            androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat.v161)
@@ -77,12 +83,19 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.kotlinx.coroutines.core)
 
+
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.navigation.compose)
 
             implementation(libs.openai.client.v382)
+
+            implementation(libs.purchases.core)
+            implementation(libs.purchases.ui)
+            implementation(libs.purchases.datetime)   // Optional
+            implementation(libs.purchases.either)     // Optional
+            implementation(libs.purchases.result)
         }
 
         desktopMain.dependencies {
