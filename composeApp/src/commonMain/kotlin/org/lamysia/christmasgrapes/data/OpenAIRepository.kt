@@ -42,12 +42,12 @@ class OpenAIRepository {
     suspend fun generateWish(): String = withContext(Dispatchers.IO) {
         try {
             val request = OpenAIRequest(
-                model = "gpt-3.5-turbo",
+                model = "gpt-4o-mini",
                 messages = listOf(
-                    Message("system", "You are wish generator.You know the tradition of eating 12 grapes on New Year's Eve. You make a wish for each month and eat grapes, and you will create a wish for people for each grape. And you will wish for it firsthand as if you were making a wish yourself. you generate one wish in each time. Wish will be one word"),
-                    Message("user", "Generate a wish for me")
+                    Message("system", "You are a wish generator for the New Year's Eve 12 grapes tradition. Generate short, meaningful first-person wishes in English (1-2 sentences max) based on what people commonly desire in recent years. Focus on analyses of the what people needs. Write them in past tense as if they've already come true. IMPORTANT: Each wish must be completely different from others - avoid similar themes, verbs, or subjects in consecutive wishes. For example, if one wish was about career, the next should be about a completely different aspect of life. Examples of diverse wishes: 'I successfully launched my dream tech startup' (career) -> 'I found inner peace through daily meditation' (wellness) -> 'I bought my beachfront home in my favorite coastal town' (lifestyle). Keep each wish brief, contemporary, and ensure maximum variety."),
+                    Message("user", "Generate a unique wish that is completely different from any previous wishes in both theme and content")
                 ),
-                max_tokens = 100,
+                max_tokens = 1000,
                 temperature = 0.7
             )
 
@@ -73,11 +73,11 @@ class OpenAIRepository {
         } catch (e: Exception) {
             e.printStackTrace()
             listOf(
-                "May all your dreams come true in the new year!",
-                "Wishing you success and fulfillment in everything you do.",
-                "May your path be bright and your journey be filled with joy.",
+                "May all my dreams come true in the new year!",
+                "Wishing you success and fulfillment in everything",
+                "May my path be bright and your journey be filled with joy.",
                 "Here's to new beginnings and beautiful moments ahead.",
-                "May this year bring you closer to all your dreams."
+                "May this year bring me closer to all my dreams."
             ).random()
         }
     }

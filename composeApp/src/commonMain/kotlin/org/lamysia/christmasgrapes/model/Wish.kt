@@ -16,5 +16,7 @@ data class Wish(
     @SerialName("assigned_month")
     val assignedMonth: Int? = 1,
     @SerialName("is_completed")
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false,
+    @SerialName("user_id")
+    val userId: String? = null
 )
