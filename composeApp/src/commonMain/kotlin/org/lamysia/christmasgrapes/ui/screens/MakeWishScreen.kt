@@ -28,45 +28,34 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowy
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.lamysia.christmasgrapes.ui.components.PremiumBanner
+import org.lamysia.christmasgrapes.model.Wish
+import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.theme.AppColors
-import org.lamysia.christmasgrapes.ui.theme.AppTheme
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MakeWishScreen(
     isPremium: Boolean = false,
-    wishCount: Int = 0,
-    onWishMade: (String) -> Unit = {},
-    onUpgradeToPremium: () -> Unit = {}
+    onWishMade: (String) -> Unit = {}
 ) {
     var wishText by remember { mutableStateOf("") }
+    var showWishCard by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Kar taneli arka plan
         Image(
             painter = painterResource(Res.drawable.snowy),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            if (!isPremium) {
-                PremiumBanner(
-                    onUpgradeClick = onUpgradeToPremium
-                )
-            }
 
+        ) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -86,69 +75,148 @@ fun MakeWishScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = wishText,
-                        onValueChange = {
-                            if (it.length <= 100) { // Karakter sınırı
-                                wishText = it
-                            }
-                        },
-                        label = { Text("Enter your wish") },
-                        placeholder = { Text("What's your wish for the new year?") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = AppColors.Primary,
-                            focusedLabelColor = AppColors.Primary
-                        ),
-                        maxLines = 3,
-                        singleLine = false
-                    )
+            OutlinedTextField(
+                value = wishText,
+                onValueChange = { wishText = it },
+                label = { Text("Enter your wish") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = AppColors.Primary,
+                    focusedLabelColor = AppColors.Primary
+                )
+            )
 
-                    Text(
-                        text = "${wishText.length}/100",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (wishText.length >= 100) AppColors.Error else AppColors.Secondary,
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(top = 4.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = {
-                            if (wishText.isNotBlank()) {
-                                onWishMade(wishText)
-                                wishText = ""
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = AppColors.Primary
-                        ),
-                        enabled = wishText.isNotBlank() && (isPremium || wishCount >= 3)
-                    ) {
-                        Text("Save Wish")
+            Button(
+                onClick = {
+                    if (wishText.isNotBlank()) {
+                        showWishCard = true
                     }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.Primary
+                )
+            ) {
+                Text("Save Wish")
+            }
+        }
 
-                    if (!isPremium) {
+        if (showWishCard) {
+            WishDialog(
+                wish = Wish(
+                    id = null,
+                    text = wishText,
+                    isPremium = isPremium,
+                    hasWish = true
+                ),
+                isLoading = false,
+                error = null,
+                onDismiss = { showWishCard = false },
+                onSave = { wish ->
+                    onWishMade(wish.text)
+                    showWishCard = false
+                },
+                showShareButton = true
+            )
+        }
+    }
+}}}
+
+// WishDialog.kt
+/*
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun WishDialog(
+    wish: Wish,
+    isLoading: Boolean = false,
+    error: String? = null,
+    onDismiss: () -> Unit,
+    onSave: (Wish) -> Unit,
+    showShareButton: Boolean = false
+) {
+
+    val platformContext = LocalPlatformContext.current
+    val shareUtil = remember { ShareUtil(platformContext) }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.postcard),
+                contentDescription = "Postcard",
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .aspectRatio(1.5f)
+                    .padding(16.dp)
+            )
+
+            when {
+                isLoading -> {
+                    CircularProgressIndicator(
+                        color = AppColors.Primary,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                error != null -> {
+                    Text(
+                        text = "Failed to generate wish",
+                        color = AppColors.Error,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                else -> {
+                    Column(
+                        modifier = Modifier
+                            .padding(32.dp)
+                            .fillMaxWidth(0.8f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Text(
-                            text = "Free wishes remaining: ${3 - wishCount}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = AppColors.Secondary,
-                            modifier = Modifier.padding(top = 8.dp)
+                            text = wish.text,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = FontFamily.Cursive,
+                                fontSize = 24.sp
+                            ),
+                            color = AppColors.Primary,
+                            textAlign = TextAlign.Center
                         )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+
+                            TextButton(onClick = onDismiss) {
+                                Text("Close")
+                            }
+
+                            Button(
+                                onClick = { onSave(wish) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AppColors.Primary
+                                )
+                            ) {
+                                Text("Save Wish")
+                            }
+                        }
                     }
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun MakeWishScreenPreview() {
-    AppTheme {
-        MakeWishScreen()
-    }
-}
+}}}*/

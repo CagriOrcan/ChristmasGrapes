@@ -210,7 +210,8 @@ fun MainScreen(
             onSave = { wish ->
                 viewModel.addWish(wish.text, isPremium)
                 showWishCard = false
-            }
+            },
+            showShareButton = true
         )
     }
 }
