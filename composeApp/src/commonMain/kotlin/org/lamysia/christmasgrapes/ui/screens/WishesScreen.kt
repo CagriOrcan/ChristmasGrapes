@@ -64,6 +64,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
@@ -255,6 +256,7 @@ private fun MonthCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .padding(top = 16.dp)
             .aspectRatio(0.75f)
             .clip(RoundedCornerShape(12.dp))
             .background(
@@ -284,7 +286,7 @@ private fun MonthCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
 
             Column(
@@ -355,6 +357,7 @@ private fun EmptyWishesState(
     }
 }
 
+@Preview
 @Composable
 private fun WishItem(
     wish: Wish,

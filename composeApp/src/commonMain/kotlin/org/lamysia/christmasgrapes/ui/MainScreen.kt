@@ -51,7 +51,7 @@ import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel
 @Composable
 fun MainScreen(
     viewModel: MakeWishViewModel = viewModel(),
-    isPremium: Boolean = false
+    isPremium: Boolean = true
 ) {
     val premiumViewModel = remember { PremiumViewModel() }
     var selectedItem by remember { mutableStateOf(0) }
