@@ -1,13 +1,21 @@
 package org.lamysia.christmasgrapes.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -20,10 +28,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import christmasgrapes.composeapp.generated.resources.Res
+import christmasgrapes.composeapp.generated.resources.snowflake
 import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
 import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
+import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.screens.HomeScreen
@@ -37,7 +51,7 @@ import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel
 @Composable
 fun MainScreen(
     viewModel: MakeWishViewModel = viewModel(),
-    isPremium: Boolean = false
+    isPremium: Boolean = true
 ) {
     val premiumViewModel = remember { PremiumViewModel() }
     var selectedItem by remember { mutableStateOf(0) }
@@ -52,92 +66,102 @@ fun MainScreen(
         }
     }
 
-
-        Scaffold(
+    Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = AppColors.Primary,
-                modifier = Modifier.fillMaxWidth()
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = "Home",
-                            tint = if (selectedItem == 0) AppColors.Background else AppColors.Surface
-                        )
-                    },
-                    label = { Text("Home") },
-                    selected = selectedItem == 0,
-                    onClick = {
-                        selectedItem = 0
-                        showPremiumScreen = false // Premium ekranını kapat
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AppColors.Background,
-                        unselectedIconColor = AppColors.Surface,
-                        selectedTextColor = AppColors.Background,
-                        unselectedTextColor = AppColors.Surface,
-                        indicatorColor = AppColors.PrimaryDark
-                    )
-                )
+                NavigationBar(
+                    containerColor = AppColors.Primary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(78.dp)
+                        .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
 
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.AddCircle,
-                            contentDescription = "Make a Wish",
-                            tint = if (selectedItem == 1) AppColors.Background else AppColors.Surface
-                        )
-                    },
-                    label = { Text("Make a Wish") },
-                    selected = selectedItem == 1,
-                    onClick = {
-                        if (isPremium) {
-                            selectedItem = 1
+                ) {
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Home,
+                                contentDescription = "Home",
+                                tint = if (selectedItem == 0) AppColors.Background else AppColors.Surface,
+                            )
+                        },
+                        label = { Text("Home") },
+                        selected = selectedItem == 0,
+                        onClick = {
+                            selectedItem = 0
                             showPremiumScreen = false
-                        } else {
-                            showPremiumScreen = true
-                        }
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AppColors.Background,
-                        unselectedIconColor = AppColors.Surface,
-                        selectedTextColor = AppColors.Background,
-                        unselectedTextColor = AppColors.Surface,
-                        indicatorColor = AppColors.PrimaryDark
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = AppColors.Background,
+                            unselectedIconColor = AppColors.Surface,
+                            selectedTextColor = AppColors.Background,
+                            unselectedTextColor = AppColors.Surface,
+                            indicatorColor = AppColors.PrimaryDark
+                        ),
                     )
-                )
 
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.List,
-                            contentDescription = "Wishes",
-                            tint = if (selectedItem == 2) AppColors.Background else AppColors.Surface
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.List,
+                                contentDescription = "Wishes",
+                                tint = if (selectedItem == 2) AppColors.Background else AppColors.Surface,
+                            )
+                        },
+                        label = { Text("Wishes") },
+                        selected = selectedItem == 2,
+                        onClick = {
+                            if (isPremium) {
+                                selectedItem = 2
+                                showPremiumScreen = false
+                            } else {
+                                showPremiumScreen = true
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = AppColors.Background,
+                            unselectedIconColor = AppColors.Surface,
+                            selectedTextColor = AppColors.Background,
+                            unselectedTextColor = AppColors.Surface,
+                            indicatorColor = AppColors.PrimaryDark
                         )
-                    },
-                    label = { Text("Wishes") },
-                    selected = selectedItem == 2,
-                    onClick = {
-                        if (isPremium) {
-                            selectedItem = 2
-                            showPremiumScreen = false
-                        } else {
-                            showPremiumScreen = true
-                        }
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = AppColors.Background,
-                        unselectedIconColor = AppColors.Surface,
-                        selectedTextColor = AppColors.Background,
-                        unselectedTextColor = AppColors.Surface,
-                        indicatorColor = AppColors.PrimaryDark
                     )
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+            // Docked FAB
+            FloatingActionButton(
+                onClick = {
+                    if (isPremium) {
+                        selectedItem = 1
+                        showPremiumScreen = false
+                    } else {
+                        showPremiumScreen = true
+                    }
+                },
+                containerColor = AppColors.Background,
+                contentColor = AppColors.Primary,
+                shape = CircleShape,
+                elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .size(72.dp)
+                    .offset(y = 56.dp)
+                    .border(2.dp, AppColors.Primary, CircleShape),
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.snowflake),
+                    contentDescription = "Make a Wish",
+                    modifier = Modifier.size(36.dp)
                 )
             }
-        }
-    )  { paddingValues ->
+        },
+    ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             if (showPremiumScreen) {
                 Paywall(options = options)
@@ -174,11 +198,11 @@ fun MainScreen(
         WishDialog(
             wish = Wish(
                 id = null,
-                text = generatedWish,  // HomeScreen'den gelen wish'i kullan
+                text = generatedWish,
                 isPremium = isPremium,
                 hasWish = true
             ),
-            isLoading = false,  // İstek zaten tamamlandı
+            isLoading = false,
             error = null,
             onDismiss = {
                 showWishCard = false
