@@ -70,8 +70,8 @@ import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
 
 private val monthNames = listOf(
-    "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-    "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
 )
 
 private fun String.toFormattedDate(): String {
