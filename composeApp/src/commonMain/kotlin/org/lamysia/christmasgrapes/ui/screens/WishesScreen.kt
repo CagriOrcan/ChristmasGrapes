@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
@@ -34,12 +37,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import christmasgrapes.composeapp.generated.resources.Res
+import christmasgrapes.composeapp.generated.resources.snowy
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
@@ -60,6 +68,7 @@ private fun String.toFormattedDate(): String {
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WishesScreen(
     modifier: Modifier = Modifier,
@@ -71,6 +80,14 @@ fun WishesScreen(
     val canAddFreeWish by viewModel.canAddFreeWish.collectAsState(initial = false)
 
     Box(modifier = modifier.fillMaxSize()) {
+        // Snowy background
+        Image(
+            painter = painterResource(Res.drawable.snowy),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
         AnimatedVisibility(
             visible = loading,
             enter = fadeIn(),
@@ -183,13 +200,19 @@ private fun WishItem(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = AppColors.Primary,
+                shape = RoundedCornerShape(12.dp)
+            ),
         colors = CardDefaults.cardColors(
-            containerColor = AppColors.Background
+            containerColor = AppColors.Background.copy(alpha = 0.9f)
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
-        )
+        ),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
             modifier = Modifier
