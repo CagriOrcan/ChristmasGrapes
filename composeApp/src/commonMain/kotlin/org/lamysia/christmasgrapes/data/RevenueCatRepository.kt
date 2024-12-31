@@ -66,4 +66,22 @@ class RevenueCatRepository {
             false
         }
     }
+
+    suspend fun getCustomerInfo(): com.revenuecat.purchases.kmp.CustomerInfo? {
+        return try {
+            var customerInfo: com.revenuecat.purchases.kmp.CustomerInfo? = null
+            Purchases.sharedInstance.getCustomerInfo(
+                onError = { error ->
+                    println("Error fetching customer info: ${error.message}")
+                },
+                onSuccess = { info ->
+                    customerInfo = info
+                }
+            )
+            customerInfo
+        } catch (e: Exception) {
+            println("Exception fetching customer info: ${e.message}")
+            null
+        }
+    }
 }

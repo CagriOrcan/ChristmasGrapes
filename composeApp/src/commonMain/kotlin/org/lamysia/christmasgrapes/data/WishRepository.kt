@@ -55,14 +55,29 @@ class WishRepository {
     }
 
     suspend fun toggleWishCompletion(wishId: Int, isCompleted: Boolean): Result<Unit> = runCatching {
+        println("Repository: Toggling wish completion - wishId: $wishId, isCompleted: $isCompleted")
+        
+        // Simple update query
         client.postgrest["wishes"]
-            .update(
-                {
-                    set("is_completed", isCompleted)
-                }
-            ) {
-                filter("id", FilterOperator.EQ, wishId)
+            .update({
+                set("is_completed", isCompleted)
+            }) {
+                eq("id", wishId)
             }
+            .also { println("Repository: Update executed") }
+
+        // Verify the update immediately
+        val verifyWish = client.postgrest["wishes"]
+            .select { eq("id", wishId) }
+            .decodeSingleOrNull<Wish>()
+            .also { println("Repository: Verification wish - $it") }
+
+        if (verifyWish?.isCompleted != isCompleted) {
+            throw Exception("Failed to update wish completion status. Expected: $isCompleted, Got: ${verifyWish?.isCompleted}")
+        }
+    }.onFailure {
+        println("Repository: Error toggling wish completion - ${it.message}")
+        println("Repository: Error stack trace - ${it.stackTraceToString()}")
     }
 
     suspend fun getFreeWishCount(): Result<Int> = runCatching {

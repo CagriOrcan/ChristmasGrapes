@@ -129,12 +129,16 @@ fun WishesScreen(
         }
 
         if (selectedMonth != null) {
+            println("WishesScreen: Showing MonthDetailScreen for month: $selectedMonth")
             MonthDetailScreen(
                 monthName = selectedMonth!!,
-                wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(selectedMonth) + 1 },
+                wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(selectedMonth) + 1 }.also {
+                    println("WishesScreen: Filtered wishes for month: ${it.map { wish -> "${wish.text}(completed=${wish.isCompleted})" }}")
+                },
                 onBackClick = { selectedMonth = null },
-                onWishComplete = { wish ->
-                    viewModel.toggleWishCompletion(wish.id!!, !wish.isCompleted)
+                onWishComplete = { updatedWish ->
+                    println("WishesScreen: onWishComplete called for wish: ${updatedWish.text}, new isCompleted: ${updatedWish.isCompleted}")
+                    viewModel.toggleWishCompletion(updatedWish.id!!, updatedWish.isCompleted)
                 },
                 onDeleteWish = { wish ->
                     viewModel.deleteWish(wish.id!!)

@@ -1,6 +1,7 @@
 package org.lamysia.christmasgrapes.data
 
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.gotrue.GoTrue
 import io.github.jan.supabase.postgrest.Postgrest
 
 object SupabaseClient {
@@ -12,5 +13,6 @@ object SupabaseClient {
         supabaseKey = SUPABASE_KEY
     ) {
         install(Postgrest)
+        install(GoTrue)
     }
 }

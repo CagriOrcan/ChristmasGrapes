@@ -18,15 +18,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -100,9 +105,14 @@ fun MonthDetailScreen(
                 contentPadding = PaddingValues(vertical = 8.dp)
             ) {
                 items(wishes) { wish ->
+                    var isCompleted by remember { mutableStateOf(wish.isCompleted) }
+
                     MonthDetailWishItem(
-                        wish = wish,
-                        onComplete = { onWishComplete(wish) },
+                        wish = wish.copy(isCompleted = isCompleted),
+                        onComplete = {
+                            isCompleted = !isCompleted
+                            onWishComplete(wish.copy(isCompleted = isCompleted))
+                        },
                         onDelete = { onDeleteWish(wish) }
                     )
                 }
@@ -118,12 +128,15 @@ private fun MonthDetailWishItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val completedColor = Color(0xFF4CAF50) // Material Green
+    println("Rendering wish: ${wish.text}, isCompleted: ${wish.isCompleted}")
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = AppColors.Primary,
+                color = if (wish.isCompleted) completedColor else AppColors.Primary,
                 shape = RoundedCornerShape(12.dp)
             ),
         colors = CardDefaults.cardColors(
@@ -141,44 +154,41 @@ private fun MonthDetailWishItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = wish.text,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f),
-                textDecoration = if (wish.isCompleted) TextDecoration.LineThrough else TextDecoration.None,
-                color = if (wish.isCompleted) AppColors.Secondary.copy(alpha = 0.7f) else Color.Unspecified
-            )
-
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                IconButton(
-                    onClick = onComplete,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(
-                            color = if (wish.isCompleted) AppColors.Primary else AppColors.Primary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Complete wish",
-                        tint = if (wish.isCompleted) Color.White else AppColors.Primary
+                Checkbox(
+                    checked = wish.isCompleted,
+                    onCheckedChange = { newCheckedState ->
+                        println("Checkbox clicked for wish: ${wish.text}, current state: ${wish.isCompleted}, new state: $newCheckedState")
+                        onComplete()
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = completedColor,
+                        uncheckedColor = AppColors.Primary.copy(alpha = 0.6f)
                     )
-                }
+                )
+                
+                Text(
+                    text = wish.text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textDecoration = if (wish.isCompleted) TextDecoration.LineThrough else TextDecoration.None,
+                    color = if (wish.isCompleted) completedColor else Color.Unspecified,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+            }
 
-                IconButton(
-                    onClick = onDelete,
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete wish",
-                        tint = AppColors.Error.copy(alpha = 0.7f)
-                    )
-                }
+            IconButton(
+                onClick = onDelete,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete wish",
+                    tint = AppColors.Error.copy(alpha = 0.7f)
+                )
             }
         }
     }

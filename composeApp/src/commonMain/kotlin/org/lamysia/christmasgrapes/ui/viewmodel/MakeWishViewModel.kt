@@ -120,16 +120,19 @@ class MakeWishViewModel: ViewModel() {
     }
 
     fun toggleWishCompletion(wishId: Int, isCompleted: Boolean) {
+        println("ViewModel: Toggling wish completion - wishId: $wishId, isCompleted: $isCompleted")
         viewModelScope.launch {
             _loading.value = true
             try {
                 repository.toggleWishCompletion(wishId, isCompleted)
                     .onSuccess {
+                        println("ViewModel: Wish completion toggle successful, reloading wishes")
                         loadWishes()
                         _error.value = null
                     }
-                    .onFailure {
-                        _error.value = it.message
+                    .onFailure { error ->
+                        println("ViewModel: Error toggling wish completion - ${error.message}")
+                        _error.value = error.message
                     }
             } finally {
                 _loading.value = false

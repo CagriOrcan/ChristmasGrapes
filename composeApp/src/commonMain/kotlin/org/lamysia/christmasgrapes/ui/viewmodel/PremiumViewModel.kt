@@ -9,8 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.lamysia.christmasgrapes.data.RevenueCatRepository
+import org.lamysia.christmasgrapes.data.UserSubscriptionRepository
 
-class PremiumViewModel(private val repository: RevenueCatRepository = RevenueCatRepository()) : ViewModel() {
+class PremiumViewModel(
+    private val repository: RevenueCatRepository = RevenueCatRepository(),
+    private val userSubscriptionRepository: UserSubscriptionRepository = UserSubscriptionRepository()
+) : ViewModel() {
     private val _offerings = MutableStateFlow<Offerings?>(null)
     val offerings: StateFlow<Offerings?> = _offerings.asStateFlow()
 
@@ -39,6 +43,8 @@ class PremiumViewModel(private val repository: RevenueCatRepository = RevenueCat
     private fun checkPremiumStatus() {
         viewModelScope.launch {
             _isPremium.value = repository.checkPremiumAccess()
+            // Sync with Supabase
+            userSubscriptionRepository.syncSubscriptionWithRevenueCat()
         }
     }
 
@@ -47,11 +53,10 @@ class PremiumViewModel(private val repository: RevenueCatRepository = RevenueCat
             _loading.value = true
             try {
                 repository.purchasePackage(packageToPurchase)
-                checkPremiumStatus() // Satın alma sonrası premium durumu kontrol et
+                checkPremiumStatus() // Check premium status and sync with Supabase
             } finally {
                 _loading.value = false
             }
         }
     }
-
 }
