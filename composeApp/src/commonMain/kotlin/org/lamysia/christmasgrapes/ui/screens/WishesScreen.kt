@@ -68,6 +68,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
+import androidx.compose.ui.graphics.Color
 
 private val monthNames = listOf(
     "January", "February", "March", "April", "May", "June",
@@ -99,6 +100,7 @@ fun WishesScreen(
     var isDragging by remember { mutableStateOf(false) }
     var selectedMonth by remember { mutableStateOf<String?>(null) }
     var targetMonthIndex by remember { mutableStateOf<Int?>(null) }
+    var showSummary by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
         // Snowy background
@@ -128,7 +130,12 @@ fun WishesScreen(
             )
         }
 
-        if (selectedMonth != null) {
+        if (showSummary) {
+            SummaryScreen(
+                wishes = wishes,
+                onBackClick = { showSummary = false }
+            )
+        } else if (selectedMonth != null) {
             println("WishesScreen: Showing MonthDetailScreen for month: $selectedMonth")
             MonthDetailScreen(
                 monthName = selectedMonth!!,
@@ -145,63 +152,94 @@ fun WishesScreen(
                 }
             )
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(16.dp)
             ) {
-                items(monthNames) { monthName ->
-                    MonthCard(
-                        monthName = monthName,
-                        wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(monthName) + 1 },
-                        onMonthClick = { selectedMonth = monthName },
-                        onDragStart = { wish ->
-                            draggedWish = wish
-                            isDragging = true
-                            targetMonthIndex = null
-                        },
-                        onDragEnd = { month ->
-                            if (draggedWish != null && targetMonthIndex != null) {
-                                viewModel.updateWishMonth(draggedWish!!.id!!, targetMonthIndex!! + 1)
-                            }
-                            draggedWish = null
-                            isDragging = false
-                            dragOffset = Offset.Zero
-                            targetMonthIndex = null
-                        },
-                        onDragCancel = {
-                            draggedWish = null
-                            isDragging = false
-                            dragOffset = Offset.Zero
-                            targetMonthIndex = null
-                        },
-                        onDelete = { wish -> viewModel.deleteWish(wish.id!!) },
-                        onDragUpdate = { newOffset, monthIndex -> 
-                            dragOffset = newOffset
-                            targetMonthIndex = monthIndex
-                        },
-                        isTargeted = monthNames.indexOf(monthName) == targetMonthIndex,
-                        isDragging = isDragging
-                    )
-                }
-            }
-
-            // Dragged wish preview
-            if (isDragging && draggedWish != null) {
-                Box(
+                // Summary Button
+                Card(
                     modifier = Modifier
-                        .offset { IntOffset(dragOffset.x.toInt(), dragOffset.y.toInt()) }
-                        .zIndex(1f)
-                        .alpha(0.9f)
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                        .clickable { showSummary = true },
+                    colors = CardDefaults.cardColors(
+                        containerColor = AppColors.Primary
+                    ),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    WishItem(
-                        wish = draggedWish!!,
-                        onDelete = {},
-                        modifier = Modifier.width(200.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Yıllık Özetini Gör",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White
+                        )
+                    }
+                }
+
+                // Months Grid
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(monthNames) { monthName ->
+                        MonthCard(
+                            monthName = monthName,
+                            wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(monthName) + 1 },
+                            onMonthClick = { selectedMonth = monthName },
+                            onDragStart = { wish ->
+                                draggedWish = wish
+                                isDragging = true
+                                targetMonthIndex = null
+                            },
+                            onDragEnd = { month ->
+                                if (draggedWish != null && targetMonthIndex != null) {
+                                    viewModel.updateWishMonth(draggedWish!!.id!!, targetMonthIndex!! + 1)
+                                }
+                                draggedWish = null
+                                isDragging = false
+                                dragOffset = Offset.Zero
+                                targetMonthIndex = null
+                            },
+                            onDragCancel = {
+                                draggedWish = null
+                                isDragging = false
+                                dragOffset = Offset.Zero
+                                targetMonthIndex = null
+                            },
+                            onDelete = { wish -> viewModel.deleteWish(wish.id!!) },
+                            onDragUpdate = { newOffset, monthIndex -> 
+                                dragOffset = newOffset
+                                targetMonthIndex = monthIndex
+                            },
+                            isTargeted = monthNames.indexOf(monthName) == targetMonthIndex,
+                            isDragging = isDragging
+                        )
+                    }
+                }
+
+                // Dragged wish preview
+                if (isDragging && draggedWish != null) {
+                    Box(
+                        modifier = Modifier
+                            .offset { IntOffset(dragOffset.x.toInt(), dragOffset.y.toInt()) }
+                            .zIndex(1f)
+                            .alpha(0.9f)
+                    ) {
+                        WishItem(
+                            wish = draggedWish!!,
+                            onDelete = {},
+                            modifier = Modifier.width(200.dp)
+                        )
+                    }
                 }
             }
         }
