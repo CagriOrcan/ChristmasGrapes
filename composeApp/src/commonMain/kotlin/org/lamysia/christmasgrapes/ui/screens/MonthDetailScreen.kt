@@ -99,6 +99,53 @@ fun MonthDetailScreen(
                 Spacer(modifier = Modifier.size(48.dp))
             }
 
+            // Summary Section
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = AppColors.Background.copy(alpha = 0.9f)
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = wishes.size.toString(),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = AppColors.Primary
+                        )
+                        Text(
+                            text = "Total Wishes",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = AppColors.Primary
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = wishes.count { it.isCompleted }.toString(),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color(0xFF4CAF50)
+                        )
+                        Text(
+                            text = "Completed",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF4CAF50)
+                        )
+                    }
+                }
+            }
+
             // Wishes List
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
