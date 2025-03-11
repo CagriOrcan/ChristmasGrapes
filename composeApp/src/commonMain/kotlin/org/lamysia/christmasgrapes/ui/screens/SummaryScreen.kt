@@ -2,13 +2,28 @@ package org.lamysia.christmasgrapes.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,7 +109,7 @@ fun SummaryScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Bu yıl ${wishes.size} dilek yazdın!",
+                        text = "You wrote ${wishes.size} wishes this year!",
                         style = MaterialTheme.typography.titleLarge,
                         color = AppColors.Primary,
                         textAlign = TextAlign.Center
@@ -108,13 +123,13 @@ fun SummaryScreen(
                     ) {
                         StatisticItem(
                             count = completedWishes.size,
-                            label = "Gerçekleşen\nDilekler",
+                            label = "Wishes\nCome True",
                             color = Color(0xFF4CAF50)
                         )
                         
                         StatisticItem(
                             count = pendingWishes.size,
-                            label = "Bekleyen\nDilekler",
+                            label = "Pending\nWishes",
                             color = Color(0xFFFFA726)
                         )
                     }
@@ -126,7 +141,7 @@ fun SummaryScreen(
             // Completed Wishes Section
             if (completedWishes.isNotEmpty()) {
                 Text(
-                    text = "Gerçekleşen Dileklerin",
+                    text = "Wishes Come True",
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -137,6 +152,24 @@ fun SummaryScreen(
                 ) {
                     items(completedWishes) { wish ->
                         CompletedWishItem(wish = wish)
+                    }
+                }
+            }
+
+            // Completed Wishes Section
+            if (pendingWishes.isNotEmpty()) {
+                Text(
+                    text = "Pending Wishes",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(pendingWishes) { wish ->
+                        PendingWishItem(wish = wish)
                     }
                 }
             }
@@ -203,4 +236,40 @@ private fun CompletedWishItem(
             )
         }
     }
-} 
+}
+
+@Composable
+private fun PendingWishItem(
+    wish: Wish,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = AppColors.Background.copy(alpha = 0.9f)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.snowy),
+                contentDescription = null,
+                tint = Color(0xFFFFA726),
+                modifier = Modifier.size(24.dp)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Text(
+                text = wish.text,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color(0xFFFFA726)
+            )
+        }
+    }
+}

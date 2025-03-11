@@ -10,7 +10,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,13 +28,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,10 +46,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -68,7 +64,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
-import androidx.compose.ui.graphics.Color
 
 private val monthNames = listOf(
     "January", "February", "March", "April", "May", "June",
@@ -176,7 +171,7 @@ fun WishesScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Yıllık Özetini Gör",
+                            text = "Annual Summary",
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.White
                         )
@@ -235,7 +230,7 @@ fun WishesScreen(
                             .alpha(0.9f)
                     ) {
                         WishItem(
-                            wish = draggedWish!!,
+                            wish = listOf(draggedWish!!),
                             onDelete = {},
                             modifier = Modifier.width(200.dp)
                         )
@@ -336,34 +331,15 @@ private fun MonthCard(
                     .fillMaxSize()
                     .padding(4.dp)
             ) {
-                wishes.forEach { wish ->
-                    WishItem(
-                        wish = wish,
-                        onDelete = { onDelete(wish) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                            .pointerInput(Unit) {
-                                detectDragGesturesAfterLongPress(
-                                    onDragStart = { offset ->
-                                        onDragStart(wish)
-                                        localDragOffset = Offset.Zero
-                                    },
-                                    onDragEnd = {
-                                        onDragEnd(monthIndex)
-                                    },
-                                    onDragCancel = {
-                                        onDragCancel()
-                                    },
-                                    onDrag = { change, dragAmount ->
-                                        change.consume()
-                                        localDragOffset += dragAmount
-                                        onDragUpdate(localDragOffset, monthIndex)
-                                    }
-                                )
-                            }
-                    )
-                }
+                Text(
+                    text = if(!wishes.isNullOrEmpty()) "\n${wishes.size}" else "",
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    color = AppColors.Secondary,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth()
+                )
             }
         }
     }
@@ -402,54 +378,15 @@ private fun EmptyWishesState(
 @Preview
 @Composable
 private fun WishItem(
-    wish: Wish,
+    wish: List<Wish>,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = AppColors.Primary,
-                shape = RoundedCornerShape(12.dp)
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = AppColors.Background.copy(alpha = 0.9f)
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        ),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = wish.text,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            IconButton(
-                onClick = onDelete,
-                modifier = Modifier.size(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete wish",
-                    tint = AppColors.Error.copy(alpha = 0.7f)
-                )
-            }
-        }
+    Column {
+        Text(
+            text = "${wish.size}",
+            style = MaterialTheme.typography.titleLarge,
+            color = AppColors.Primary
+        )
     }
 }
