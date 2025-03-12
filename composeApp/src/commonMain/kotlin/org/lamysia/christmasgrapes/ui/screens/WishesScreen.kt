@@ -36,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +87,10 @@ fun WishesScreen(
     modifier: Modifier = Modifier,
     viewModel: MakeWishViewModel = viewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.loadWishes()
+    }
+
     val wishes by viewModel.wishes.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()

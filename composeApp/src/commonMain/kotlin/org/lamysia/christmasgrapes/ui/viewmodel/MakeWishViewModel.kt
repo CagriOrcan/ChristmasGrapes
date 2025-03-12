@@ -47,7 +47,7 @@ class MakeWishViewModel: ViewModel() {
         }
     }
 
-    private fun loadWishes() {
+    fun loadWishes() {
         viewModelScope.launch {
             _loading.value = true
             try {

@@ -27,9 +27,9 @@ fun configureIOSSystemBars() {
         )
 
         val bottomBarColor = UIColor(
-            red = 0xFF.toDouble() / 255.0,
-            green = 0xFF.toDouble() / 255.0,
-            blue = 0xFF.toDouble() / 255.0,
+            red = 0xAD.toDouble() / 255.0,
+            green = 0x08.toDouble() / 255.0,
+            blue = 0x0F.toDouble() / 255.0,
             alpha = 1.0
         )
         // Create a background view for the bottom safe area
@@ -49,4 +49,4 @@ fun configureIOSSystemBars() {
         // Set top bar color
         viewController.view.backgroundColor = topBarColor
     }
-} 
+}
