@@ -132,14 +132,14 @@ fun WishDialog(
                 )
             }
 
-            // Close and Save Wish Buttons Directly Below Postcard
+            // Buttons Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp), // 16.dp below the postcard
+                    .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-               Button(
+                Button(
                     onClick = onDismiss,
                     colors = ButtonDefaults.buttonColors(
                         contentColor = Color.White,
@@ -161,3 +161,5 @@ fun WishDialog(
         }
     }
 }
+
+

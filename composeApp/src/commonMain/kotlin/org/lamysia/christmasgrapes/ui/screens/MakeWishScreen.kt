@@ -36,6 +36,7 @@ import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowy
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
+import org.lamysia.christmasgrapes.ui.components.SuccessDialog
 import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 
@@ -54,6 +55,7 @@ fun MakeWishScreen(
     var showWishCard by remember { mutableStateOf(false) }
     var selectedMonthIndex by remember { mutableStateOf(0) }
     var isMonthDropdownExpanded by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -62,6 +64,40 @@ fun MakeWishScreen(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
+
+        // Success Dialog
+        if (showSuccessDialog) {
+            SuccessDialog(
+                onDismiss = {
+                    showSuccessDialog = false
+                }
+            )
+        }
+
+        if (showWishCard) {
+            val newWish = Wish(
+                id = null,
+                text = wishText,
+                isPremium = isPremium,
+                hasWish = true,
+                assignedMonth = selectedMonthIndex + 1
+            )
+            WishDialog(
+                wish = newWish,
+                isLoading = false,
+                error = null,
+                onDismiss = { showWishCard = false },
+                onSave = { wish ->
+                    onWishMade(wish)
+                    showWishCard = false
+                    wishText = ""
+                    // WishDialog kapandıktan sonra success dialog'u göster
+                    showSuccessDialog = true
+                },
+                showShareButton = true
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -160,27 +196,6 @@ fun MakeWishScreen(
                     }
                 }
             }
-        }
-
-        if (showWishCard) {
-            val newWish = Wish(
-                id = null,
-                text = wishText,
-                isPremium = isPremium,
-                hasWish = true,
-                assignedMonth = selectedMonthIndex + 1
-            )
-            WishDialog(
-                wish = newWish,
-                isLoading = false,
-                error = null,
-                onDismiss = { showWishCard = false },
-                onSave = { wish ->
-                    onWishMade(wish)
-                    showWishCard = false
-                },
-                showShareButton = true
-            )
         }
     }
 }

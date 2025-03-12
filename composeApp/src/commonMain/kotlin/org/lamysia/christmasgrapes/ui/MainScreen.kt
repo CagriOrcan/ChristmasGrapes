@@ -38,6 +38,7 @@ import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowflake
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
+import org.lamysia.christmasgrapes.ui.components.SuccessDialog
 import org.lamysia.christmasgrapes.ui.components.WishDialog
 import org.lamysia.christmasgrapes.ui.screens.HomeScreen
 import org.lamysia.christmasgrapes.ui.screens.MakeWishScreen
@@ -58,6 +59,7 @@ fun MainScreen(
     var showWishCard by remember { mutableStateOf(false) }
     var generatedWish by remember { mutableStateOf("") }
     var showPremiumScreen by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
     val wishes by viewModel.wishes.collectAsState()
 
    /* val options = remember {
@@ -72,6 +74,15 @@ fun MainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
+
+                if (showSuccessDialog) {
+                    SuccessDialog(
+                        onDismiss = {
+                            showSuccessDialog = false
+                        }
+                    )
+                }
+
                 NavigationBar(
                     containerColor = AppColors.Primary,
                     modifier = Modifier
@@ -215,6 +226,7 @@ fun MainScreen(
             onSave = { wish ->
                 viewModel.addWish(wish.text, isPremium)
                 showWishCard = false
+                showSuccessDialog = true
             },
             showShareButton = true
         )
