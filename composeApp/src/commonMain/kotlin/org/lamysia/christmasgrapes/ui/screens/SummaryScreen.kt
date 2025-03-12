@@ -83,7 +83,7 @@ fun SummaryScreen(
                 }
 
                 Text(
-                    text = "Yıllık Özet",
+                    text = "Annual Summary",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White
                 )

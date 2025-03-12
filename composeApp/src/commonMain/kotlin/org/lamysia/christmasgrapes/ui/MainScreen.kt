@@ -1,5 +1,7 @@
 package org.lamysia.christmasgrapes.ui
 
+/*import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions*/
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,11 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowflake
-import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
-import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.components.WishDialog
@@ -45,26 +44,27 @@ import org.lamysia.christmasgrapes.ui.screens.MakeWishScreen
 import org.lamysia.christmasgrapes.ui.screens.WishesScreen
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
-import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel
+
+/*import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel*/
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MakeWishViewModel = viewModel(),
+    viewModel: MakeWishViewModel = remember { MakeWishViewModel() },
     isPremium: Boolean = true
 ) {
-    val premiumViewModel = remember { PremiumViewModel() }
+    //val premiumViewModel = remember { PremiumViewModel() }
     var selectedItem by remember { mutableStateOf(0) }
     var showWishCard by remember { mutableStateOf(false) }
     var generatedWish by remember { mutableStateOf("") }
     var showPremiumScreen by remember { mutableStateOf(false) }
     val wishes by viewModel.wishes.collectAsState()
 
-    val options = remember {
+   /* val options = remember {
         PaywallOptions(dismissRequest = { showPremiumScreen = false }) {
             shouldDisplayDismissButton = true
         }
-    }
+    }*/
 
     Scaffold(
         bottomBar = {
@@ -164,7 +164,7 @@ fun MainScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             if (showPremiumScreen) {
-                Paywall(options = options)
+              //  Paywall(options = options)
             } else {
                 when (selectedItem) {
                     0 -> HomeScreen(

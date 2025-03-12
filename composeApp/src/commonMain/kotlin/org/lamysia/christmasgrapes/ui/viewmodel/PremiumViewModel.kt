@@ -1,3 +1,4 @@
+/*
 package org.lamysia.christmasgrapes.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -59,4 +60,4 @@ class PremiumViewModel(
             }
         }
     }
-}
+}*/

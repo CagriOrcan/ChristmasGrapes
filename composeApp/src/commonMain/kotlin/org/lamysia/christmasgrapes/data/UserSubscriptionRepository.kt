@@ -1,3 +1,4 @@
+/*
 package org.lamysia.christmasgrapes.data
 
 import io.github.jan.supabase.gotrue.gotrue
@@ -92,4 +93,4 @@ class UserSubscriptionRepository {
             )
         }
     }
-} 
+} */
