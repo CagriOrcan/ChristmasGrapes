@@ -2,6 +2,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +12,42 @@ plugins {
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.sqldelight)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+val openAiApiKey = localProperties.getProperty("openai.api.key") ?: System.getenv("OPENAI_API_KEY") ?: ""
+val revenueCatApiKey = localProperties.getProperty("revenuecat.api.key") ?: System.getenv("REVENUECAT_API_KEY") ?: ""
+val supabaseApiKey = localProperties.getProperty("supabase.api.key") ?: System.getenv("SUPABASE_API_KEY") ?: ""
+val supabaseUrlKey = localProperties.getProperty("supabase.url.key") ?: System.getenv("SUPABASE_URL_KEY") ?: ""
+
+tasks.register("generateApiConfig") {
+    doLast {
+        val configDir = File("${projectDir}/src/commonMain/kotlin/org/lamysia/christmasgrapes/config")
+        configDir.mkdirs()
+
+        val configFile = File(configDir, "ApiConfig.kt")
+        configFile.writeText("""
+            package org.lamysia.christmasgrapes.config
+            
+            object ApiConfig {
+                const val OPENAI_API_KEY = "$openAiApiKey"
+                const val REVENUECAT_API_KEY = "$revenueCatApiKey"
+                const val SUPABASE_API_KEY = "$supabaseApiKey"
+                const val SUPABASE_URL_KEY = "$supabaseUrlKey"
+            }
+        """.trimIndent())
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("generateApiConfig")
+}
+/*tasks.named("compileKotlinCommonMain") {
+    dependsOn("generateApiConfig")
+}*/
 
 kotlin {
     tasks.create("testClasses")

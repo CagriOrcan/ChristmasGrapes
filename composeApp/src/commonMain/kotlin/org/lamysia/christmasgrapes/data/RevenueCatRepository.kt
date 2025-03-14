@@ -7,11 +7,10 @@ import com.revenuecat.purchases.kmp.models.Offerings
 import com.revenuecat.purchases.kmp.models.Package
 
 class RevenueCatRepository {
-    private val apiKey = "goog_nkXmmVSaIkMUHPQFRUtuMduvhMV"
 
     init {
         Purchases.configure(
-            PurchasesConfiguration.Builder(apiKey)
+            PurchasesConfiguration.Builder(ApiConfig.REVENUECAT_API_KEY)
                 .build()
         )
     }

@@ -17,6 +17,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import org.lamysia.christmasgrapes.config.ApiConfig
 import kotlin.coroutines.cancellation.CancellationException
 
 class OpenAIRepository {
@@ -36,7 +37,7 @@ class OpenAIRepository {
         client.close()
     }
 
-    private val apiKey = "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"
+    private val apiKey = ApiConfig.OPENAI_API_KEY
     private val baseUrl = "https://api.openai.com/v1/chat/completions"
 
     suspend fun generateWish(): String = withContext(Dispatchers.IO) {
