@@ -47,7 +47,6 @@ fun FireworksAnimation() {
     Canvas(modifier = Modifier.fillMaxSize()) {
         fireworks.forEach { firework ->
             if (!firework.hasExploded) {
-                // Yükselen füze
                 drawCircle(
                     color = firework.color,
                     radius = 5.dp.toPx(),
@@ -57,7 +56,6 @@ fun FireworksAnimation() {
                     )
                 )
             } else {
-                // Patlama parçacıkları
                 firework.particles.forEach { particle ->
                     drawCircle(
                         color = firework.color,

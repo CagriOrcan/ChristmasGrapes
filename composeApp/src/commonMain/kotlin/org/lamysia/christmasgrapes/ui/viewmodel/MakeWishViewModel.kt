@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.lamysia.christmasgrapes.data.OpenAIRepository
-import org.lamysia.christmasgrapes.data.WishRepository
+import org.lamysia.christmasgrapes.data.repository.OpenAIRepository
+import org.lamysia.christmasgrapes.data.repository.WishRepository
 import org.lamysia.christmasgrapes.model.Wish
 
 class MakeWishViewModel: ViewModel() {
@@ -140,7 +140,6 @@ class MakeWishViewModel: ViewModel() {
         }
     }
 
-    // State'i UI'da yönetmek için bir Flow olarak dönelim
     val canAddFreeWish = flow {
         repository.getFreeWishCount()
             .onSuccess { count ->

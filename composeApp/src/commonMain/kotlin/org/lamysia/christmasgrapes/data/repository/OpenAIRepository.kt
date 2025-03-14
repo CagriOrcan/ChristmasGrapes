@@ -1,4 +1,4 @@
-package org.lamysia.christmasgrapes.data
+package org.lamysia.christmasgrapes.data.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout

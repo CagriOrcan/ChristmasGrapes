@@ -28,7 +28,6 @@ import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.grapes
 import christmasgrapes.composeapp.generated.resources.snowy
 import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lamysia.christmasgrapes.model.Wish
@@ -36,7 +35,6 @@ import org.lamysia.christmasgrapes.ui.theme.AppTheme
 import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(
     wishes: List<Wish>,
@@ -71,7 +69,6 @@ fun HomeScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Background Image
         Image(
             painter = painterResource(Res.drawable.snowy),
             contentDescription = "Snowy Background",

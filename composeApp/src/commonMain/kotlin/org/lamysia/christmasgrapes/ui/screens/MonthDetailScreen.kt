@@ -40,12 +40,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowy
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MonthDetailScreen(
     monthName: String,
@@ -95,7 +93,6 @@ fun MonthDetailScreen(
                     color = Color.White
                 )
 
-                // Placeholder for symmetry
                 Spacer(modifier = Modifier.size(48.dp))
             }
 

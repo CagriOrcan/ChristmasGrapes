@@ -50,7 +50,7 @@ fun SparkleAnimation() {
                 alpha = particle.alpha
             )
 
-            // Parıltı çizgileri
+
             for (i in 0..3) {
                 val angle = i * PI / 2
                 drawLine(

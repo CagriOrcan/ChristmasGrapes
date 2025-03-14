@@ -13,9 +13,9 @@ import org.lamysia.christmasgrapes.model.Wish
 @Preview
 @Composable
 private fun GrapesGrid(
-    wishes: List<Wish>, // Update parameter type
+    wishes: List<Wish>,
     isPremium: Boolean,
-    onWishClick: (Wish) -> Unit = {}, // Add click handler
+    onWishClick: (Wish) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(

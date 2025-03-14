@@ -85,7 +85,6 @@ fun WishDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Share Button in Top Right Corner
                 if (showShareButton) {
                     Box(
                         modifier = Modifier
@@ -117,7 +116,6 @@ fun WishDialog(
                     }
                 }
 
-                // Wish Text in Center
                 Text(
                     text = wish.text,
                     style = MaterialTheme.typography.bodyLarge.copy(
@@ -132,7 +130,6 @@ fun WishDialog(
                 )
             }
 
-            // Buttons Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

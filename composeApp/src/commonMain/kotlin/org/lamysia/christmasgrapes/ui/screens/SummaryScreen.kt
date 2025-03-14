@@ -33,12 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowy
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SummaryScreen(
     wishes: List<Wish>,
@@ -63,33 +61,41 @@ fun SummaryScreen(
                 .padding(16.dp)
         ) {
             // Header
-            Row(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        color = AppColors.Primary,
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .padding(12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(bottom = 12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = AppColors.Primary
+                ),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = AppColors.Primary,
+                            shape = RoundedCornerShape(16.dp)
+                        ),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+
+                    Text(
+                        text = "Annual Summary",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
                     )
+
+                    Spacer(modifier = Modifier.size(48.dp))
                 }
-
-                Text(
-                    text = "Annual Summary",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
-                )
-
-                // Placeholder for symmetry
-                Spacer(modifier = Modifier.size(48.dp))
             }
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -48,7 +47,6 @@ import org.lamysia.christmasgrapes.ui.viewmodel.MakeWishViewModel
 
 /*import org.lamysia.christmasgrapes.ui.viewmodel.PremiumViewModel*/
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MakeWishViewModel = remember { MakeWishViewModel() },

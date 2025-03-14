@@ -1,10 +1,11 @@
-package org.lamysia.christmasgrapes.data
+package org.lamysia.christmasgrapes.data.repository
 
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.query.FilterOperator
 import io.github.jan.supabase.postgrest.query.Order
+import org.lamysia.christmasgrapes.data.SupabaseClient
 import org.lamysia.christmasgrapes.model.Wish
 
 class WishRepository {

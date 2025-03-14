@@ -65,7 +65,6 @@ fun MakeWishScreen(
             contentScale = ContentScale.Crop
         )
 
-        // Success Dialog
         if (showSuccessDialog) {
             SuccessDialog(
                 onDismiss = {
@@ -91,7 +90,6 @@ fun MakeWishScreen(
                     onWishMade(wish)
                     showWishCard = false
                     wishText = ""
-                    // WishDialog kapandıktan sonra success dialog'u göster
                     showSuccessDialog = true
                 },
                 showShareButton = true
@@ -124,7 +122,6 @@ fun MakeWishScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Ay seçimi
                     ExposedDropdownMenuBox(
                         expanded = isMonthDropdownExpanded,
                         onExpandedChange = { isMonthDropdownExpanded = it },

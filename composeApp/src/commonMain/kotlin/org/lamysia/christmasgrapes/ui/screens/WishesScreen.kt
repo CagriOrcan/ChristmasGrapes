@@ -59,7 +59,6 @@ import christmasgrapes.composeapp.generated.resources.snowy
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.lamysia.christmasgrapes.model.Wish
@@ -81,7 +80,6 @@ private fun String.toFormattedDate(): String {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WishesScreen(
     modifier: Modifier = Modifier,
@@ -124,11 +122,11 @@ fun WishesScreen(
             )
         }
 
-        if (!loading && wishes.isEmpty()) {
+       /* if (!loading && wishes.isEmpty()) {
             EmptyWishesState(
                 modifier = Modifier.align(Alignment.Center)
             )
-        }
+        }*/
 
         if (showSummary) {
             SummaryScreen(
@@ -161,7 +159,7 @@ fun WishesScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 12.dp)
                         .clickable { showSummary = true },
                     colors = CardDefaults.cardColors(
                         containerColor = AppColors.Primary
@@ -171,7 +169,11 @@ fun WishesScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(16.dp)
+                            .background(
+                                color = AppColors.Primary,
+                                shape = RoundedCornerShape(12.dp)
+                            ),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
