@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -80,6 +81,64 @@ private fun String.toFormattedDate(): String {
         "${dateTime.dayOfMonth} ${monthNames[dateTime.monthNumber - 1]} ${dateTime.year}"
     } catch (e: Exception) {
         this
+    }
+}
+
+@Composable
+private fun AnnualSummaryButton(
+    wishes: List<Wish>,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val totalWishes = wishes.size
+    val completedWishes = wishes.count { it.isCompleted }
+    val completionPercentage = if (totalWishes > 0) 
+        (completedWishes.toFloat() / totalWishes * 100).toInt() else 0
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp)
+            .height(80.dp)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = AppColors.Primary.copy(alpha = 0.95f)
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "Annual Summary",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White
+                )
+                Text(
+                    text = "${wishes.size} wishes in total",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.7f)
+                )
+            }
+            
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(Color.White.copy(alpha = 0.1f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "$completionPercentage%",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White
+                )
+            }
+        }
     }
 }
 
@@ -170,35 +229,11 @@ fun WishesScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Summary Button
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp)
-                        .clickable { showSummary = true },
-                    colors = CardDefaults.cardColors(
-                        containerColor = AppColors.Primary
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .background(
-                                color = AppColors.Primary,
-                                shape = RoundedCornerShape(12.dp)
-                            ),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Annual Summary",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White
-                        )
-                    }
-                }
+                // Replace the existing Summary Button with new one
+                AnnualSummaryButton(
+                    wishes = wishes,
+                    onClick = { showSummary = true }
+                )
 
                 val monthsWithWishes = monthNames
                     .mapIndexed { index, monthName ->
@@ -458,29 +493,83 @@ private fun MonthCard(
 private fun EmptyWishesState(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .background(AppColors.Background.copy(alpha = 0.9f), RoundedCornerShape(24.dp))
+            .border(
+                width = 1.dp,
+                color = AppColors.Primary.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(24.dp)
+            )
+            .padding(32.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Icon(
-            painter = painterResource(Res.drawable.wishes),
-            contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = AppColors.Primary
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "No Wishes Yet",
-            style = MaterialTheme.typography.titleLarge,
-            color = AppColors.Primary
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Your wishes will appear here",
-            style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.Primary.copy(alpha = 0.7f),
-            textAlign = TextAlign.Center
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.wishes),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(8.dp),
+                tint = AppColors.Primary.copy(alpha = 0.7f)
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text(
+                text = "Make Your First Wish",
+                style = MaterialTheme.typography.headlineSmall,
+                color = AppColors.Primary
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            Text(
+                text = "Start by adding wishes to any month\nand watch your dreams come true",
+                style = MaterialTheme.typography.bodyLarge,
+                color = AppColors.Primary.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Hint card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = AppColors.Primary.copy(alpha = 0.1f)
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.wishes),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = AppColors.Primary
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Tap + to add a new wish",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = AppColors.Primary
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -491,11 +580,59 @@ private fun WishItem(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column {
-        Text(
-            text = "${wish.size}",
-            style = MaterialTheme.typography.titleLarge,
-            color = AppColors.Primary
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AppColors.Background.copy(alpha = 0.95f)
+        ),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
         )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = wish.firstOrNull()?.text ?: "",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = AppColors.Primary
+                    )
+                    if (wish.size > 1) {
+                        Text(
+                            text = "+${wish.size - 1} more wishes",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = AppColors.Primary.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            color = AppColors.Primary.copy(alpha = 0.1f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = wish.size.toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = AppColors.Primary
+                    )
+                }
+            }
+        }
     }
 }
