@@ -78,7 +78,31 @@ class OpenAIRepository {
                 "Wishing you success and fulfillment in everything",
                 "May my path be bright and your journey be filled with joy.",
                 "Here's to new beginnings and beautiful moments ahead.",
-                "May this year bring me closer to all my dreams."
+                "May this year bring me closer to all my dreams.",
+                "I finally got the call and landed my dream job at Apple's design team!",
+                "After saving for three years, I bought my first apartment in the city center and hosted a housewarming party!",
+                "I completed my first marathon in under 4 hours and my family was there cheering at the finish line!",
+                "My food blog reached 100,000 subscribers and I got offered a cookbook deal!",
+                "I mastered playing the guitar and performed on stage for the first time at my friend's wedding!",
+                "My startup secured its first round of funding and we're expanding to international markets!",
+                "I took that solo trip to Japan I've been planning for years and watched the cherry blossoms in Kyoto!",
+                "After months of practicing, I finally learned to surf and caught my first perfect wave in Bali!",
+                "I published my first novel and saw it on the shelves of my local bookstore!",
+                "I reconnected with my childhood best friend after 15 years and it felt like no time had passed!",
+                "I rescued a dog from the shelter and she's become my best companion on hiking trips!",
+                "I finally renovated my kitchen with the marble countertops and island I've always wanted!",
+                "I learned Italian and had my first real conversation with locals during my trip to Rome!",
+                "My YouTube channel hit 1 million subscribers and I received my Gold Play Button!",
+                "I saved enough to buy my dream car - a vintage Mustang - and took it for a road trip along the coast!",
+                "I got accepted into the master's program at Harvard and moved to Boston!",
+                "I cooked a full Thanksgiving dinner for my extended family and everyone asked for my recipes!",
+                "I built my own vegetable garden and made my first salad completely from homegrown ingredients!",
+                "I paid off all my student loans five years early and celebrated with a weekend getaway!",
+                "I learned to make pottery and sold my first handmade mug collection at the local craft fair!",
+                "I took my parents on their dream vacation to Paris and we had dinner at the Eiffel Tower!",
+                "I finally perfected my grandmother's secret recipe and my family couldn't tell the difference!",
+                "I got certified as a yoga instructor and taught my first class at the beachfront studio!",
+                "I bought the beach house I've been dreaming of and woke up to ocean views on my birthday!"
             ).random()
         }
     }

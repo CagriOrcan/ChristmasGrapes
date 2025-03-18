@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -32,9 +31,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowflake
+import christmasgrapes.composeapp.generated.resources.wishes
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.components.SuccessDialog
@@ -94,7 +95,8 @@ fun MainScreen(
                             Icon(
                                 imageVector = Icons.Default.Home,
                                 contentDescription = "Home",
-                                tint = if (selectedItem == 0) AppColors.Background else AppColors.Surface,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (selectedItem == 0) Color.White else Color.White,
                             )
                         },
                         label = { Text("Home") },
@@ -104,8 +106,8 @@ fun MainScreen(
                             showPremiumScreen = false
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = AppColors.Background,
-                            unselectedIconColor = AppColors.Surface,
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = Color.White,
                             selectedTextColor = AppColors.Background,
                             unselectedTextColor = AppColors.Surface,
                             indicatorColor = AppColors.PrimaryDark
@@ -115,9 +117,10 @@ fun MainScreen(
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.List,
+                                painter = painterResource(Res.drawable.wishes),
                                 contentDescription = "Wishes",
-                                tint = if (selectedItem == 2) AppColors.Background else AppColors.Surface,
+                                modifier = Modifier.size(24.dp),
+                                tint = if (selectedItem == 2) Color.White else Color.White,
                             )
                         },
                         label = { Text("Wishes") },

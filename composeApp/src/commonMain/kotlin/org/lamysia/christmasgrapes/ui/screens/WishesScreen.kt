@@ -25,10 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,6 +53,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowy
+import christmasgrapes.composeapp.generated.resources.wishes
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -122,11 +120,11 @@ fun WishesScreen(
             )
         }
 
-       /* if (!loading && wishes.isEmpty()) {
+        if (!loading && wishes.isEmpty()) {
             EmptyWishesState(
                 modifier = Modifier.align(Alignment.Center)
             )
-        }*/
+        }
 
         if (showSummary) {
             SummaryScreen(
@@ -185,6 +183,13 @@ fun WishesScreen(
                     }
                 }
 
+                val monthsWithWishes = monthNames
+                    .mapIndexed { index, monthName ->
+                        monthName to wishes.filter { it.assignedMonth == index + 1 }
+                    }
+                    .filter { (_, monthWishes) -> monthWishes.isNotEmpty() }
+                    .sortedBy { (monthName, _) -> monthNames.indexOf(monthName) }
+
                 // Months Grid
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
@@ -192,7 +197,9 @@ fun WishesScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(monthNames) { monthName ->
+                    items(monthsWithWishes.size) { index ->
+                        val (monthName, monthWishes) = monthsWithWishes[index]
+
                         MonthCard(
                             monthName = monthName,
                             wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(monthName) + 1 },
@@ -294,6 +301,9 @@ private fun MonthCard(
     isDragging: Boolean,
     modifier: Modifier = Modifier
 ) {
+
+    if(wishes.isNullOrEmpty()) return
+
     var localDragOffset by remember { mutableStateOf(Offset.Zero) }
     val monthIndex = monthNames.indexOf(monthName)
 
@@ -361,22 +371,22 @@ private fun EmptyWishesState(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = Icons.Default.List,
+            painter = painterResource(Res.drawable.wishes),
             contentDescription = null,
             modifier = Modifier.size(64.dp),
-            tint = AppColors.Secondary
+            tint = AppColors.Primary
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "No Wishes Yet",
             style = MaterialTheme.typography.titleLarge,
-            color = AppColors.Secondary
+            color = AppColors.Primary
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Your wishes will appear here",
             style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.Secondary.copy(alpha = 0.7f),
+            color = AppColors.Primary.copy(alpha = 0.7f),
             textAlign = TextAlign.Center
         )
     }

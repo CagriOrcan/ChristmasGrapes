@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -71,6 +72,7 @@ fun MonthDetailScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(56.dp)
                     .background(
                         color = AppColors.Primary,
                         shape = RoundedCornerShape(16.dp)
@@ -89,7 +91,7 @@ fun MonthDetailScreen(
 
                 Text(
                     text = monthName,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     color = Color.White
                 )
 

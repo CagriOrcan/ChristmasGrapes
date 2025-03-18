@@ -73,6 +73,7 @@ fun SummaryScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(56.dp)
                         .background(
                             color = AppColors.Primary,
                             shape = RoundedCornerShape(16.dp)
@@ -162,7 +163,7 @@ fun SummaryScreen(
                 }
             }
 
-            // Completed Wishes Section
+            // Pending Wishes Section
             if (pendingWishes.isNotEmpty()) {
                 Text(
                     text = "Pending Wishes",
