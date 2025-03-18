@@ -16,7 +16,8 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
-composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/data/OpenAIRepository.kt
-composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/data/RevenueCatRepository.kt
-composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/data/SupabaseClient
+/composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/data/OpenAIRepository.kt
+/composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/data/RevenueCatRepository.kt
+/composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/data/SupabaseClient
 
+/composeApp/src/commonMain/kotlin/org/lamysia/christmasgrapes/config/ApiConfig.kt
