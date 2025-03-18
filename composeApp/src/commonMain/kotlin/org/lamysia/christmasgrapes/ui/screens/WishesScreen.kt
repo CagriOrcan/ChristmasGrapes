@@ -328,6 +328,12 @@ private fun MonthCard(
 
     var localDragOffset by remember { mutableStateOf(Offset.Zero) }
     val monthIndex = monthNames.indexOf(monthName)
+    
+    // Calculate statistics
+    val completedWishes = wishes.count { it.isCompleted }
+    val completionPercentage = (completedWishes.toFloat() / wishes.size * 100).toInt()
+    val isHighProgress = completionPercentage >= 75
+    val isMediumProgress = completionPercentage in 30..74
 
     Card(
         modifier = modifier
@@ -353,31 +359,95 @@ private fun MonthCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = monthName,
-                style = MaterialTheme.typography.titleMedium,
-                color = AppColors.Primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                textAlign = TextAlign.Center,
-            )
+            // Month name with small indicator
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(
+                            color = when {
+                                isHighProgress -> Color(0xFF4CAF50)
+                                isMediumProgress -> Color(0xFFFFA726)
+                                else -> AppColors.Primary
+                            },
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = monthName,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = AppColors.Primary
+                )
+            }
 
+            // Wishes count and progress
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 Text(
-                    text = if(!wishes.isNullOrEmpty()) "\n${wishes.size}" else "",
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    color = AppColors.Secondary,
+                    text = wishes.size.toString(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = AppColors.Primary
+                )
+                Text(
+                    text = "Wishes",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = AppColors.Primary.copy(alpha = 0.7f)
+                )
+            }
+
+            // Progress indicator
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .background(Color.Gray.copy(alpha = 0.2f), RoundedCornerShape(2.dp))
+            ) {
+                Box(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth()
+                        .fillMaxWidth(completionPercentage / 100f)
+                        .height(4.dp)
+                        .background(
+                            when {
+                                isHighProgress -> Color(0xFF4CAF50)
+                                isMediumProgress -> Color(0xFFFFA726)
+                                else -> AppColors.Primary
+                            },
+                            RoundedCornerShape(2.dp)
+                        )
+                )
+            }
+
+            // Completion status
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "$completedWishes/${wishes.size}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = AppColors.Primary.copy(alpha = 0.7f)
+                )
+                Text(
+                    text = "$completionPercentage%",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = when {
+                        isHighProgress -> Color(0xFF4CAF50)
+                        isMediumProgress -> Color(0xFFFFA726)
+                        else -> AppColors.Primary
+                    }
                 )
             }
         }
