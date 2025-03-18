@@ -1,6 +1,9 @@
 package org.lamysia.christmasgrapes.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -45,9 +48,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -97,6 +102,16 @@ fun WishesScreen(
     var selectedMonth by remember { mutableStateOf<String?>(null) }
     var targetMonthIndex by remember { mutableStateOf<Int?>(null) }
     var showSummary by remember { mutableStateOf(false) }
+    
+    // Animation states
+    var selectedMonthCardBounds by remember { mutableStateOf<IntRect?>(null) }
+    val animationProgress by animateFloatAsState(
+        targetValue = if (selectedMonth != null) 1f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
 
     Box(modifier = modifier.fillMaxSize()) {
         // Snowy background
@@ -131,20 +146,22 @@ fun WishesScreen(
                 wishes = wishes,
                 onBackClick = { showSummary = false }
             )
-        } else if (selectedMonth != null) {
-            println("WishesScreen: Showing MonthDetailScreen for month: $selectedMonth")
+        } else if (selectedMonth != null && animationProgress == 1f) {
             MonthDetailScreen(
                 monthName = selectedMonth!!,
-                wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(selectedMonth) + 1 }.also {
-                    println("WishesScreen: Filtered wishes for month: ${it.map { wish -> "${wish.text}(completed=${wish.isCompleted})" }}")
+                wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(selectedMonth) + 1 },
+                onBackClick = { 
+                    selectedMonth = null
+                    selectedMonthCardBounds = null
                 },
-                onBackClick = { selectedMonth = null },
                 onWishComplete = { updatedWish ->
-                    println("WishesScreen: onWishComplete called for wish: ${updatedWish.text}, new isCompleted: ${updatedWish.isCompleted}")
                     viewModel.toggleWishCompletion(updatedWish.id!!, updatedWish.isCompleted)
                 },
                 onDeleteWish = { wish ->
                     viewModel.deleteWish(wish.id!!)
+                },
+                modifier = Modifier.graphicsLayer {
+                    alpha = animationProgress
                 }
             )
         } else {
@@ -193,7 +210,11 @@ fun WishesScreen(
                 // Months Grid
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .graphicsLayer {
+                            alpha = 1f - animationProgress
+                        },
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -203,7 +224,9 @@ fun WishesScreen(
                         MonthCard(
                             monthName = monthName,
                             wishes = wishes.filter { it.assignedMonth == monthNames.indexOf(monthName) + 1 },
-                            onMonthClick = { selectedMonth = monthName },
+                            onMonthClick = { 
+                                selectedMonth = monthName
+                            },
                             onDragStart = { wish ->
                                 draggedWish = wish
                                 isDragging = true
@@ -301,7 +324,6 @@ private fun MonthCard(
     isDragging: Boolean,
     modifier: Modifier = Modifier
 ) {
-
     if(wishes.isNullOrEmpty()) return
 
     var localDragOffset by remember { mutableStateOf(Offset.Zero) }

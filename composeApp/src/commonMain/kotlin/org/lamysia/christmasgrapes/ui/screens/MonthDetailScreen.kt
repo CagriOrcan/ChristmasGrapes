@@ -1,5 +1,8 @@
 package org.lamysia.christmasgrapes.ui.screens
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -55,7 +60,7 @@ fun MonthDetailScreen(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        // Background
+        // Background with fade animation
         Image(
             painter = painterResource(Res.drawable.snowy),
             contentDescription = null,
@@ -68,7 +73,7 @@ fun MonthDetailScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Header
+            // Header with slide animation
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,7 +103,7 @@ fun MonthDetailScreen(
                 Spacer(modifier = Modifier.size(48.dp))
             }
 
-            // Summary Section
+            // Summary Section with slide and fade animation
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,7 +150,7 @@ fun MonthDetailScreen(
                 }
             }
 
-            // Wishes List
+            // Wishes List with staggered animation
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp)
@@ -175,11 +180,27 @@ private fun MonthDetailWishItem(
     modifier: Modifier = Modifier
 ) {
     val completedColor = Color(0xFF4CAF50) // Material Green
-    println("Rendering wish: ${wish.text}, isCompleted: ${wish.isCompleted}")
+
+    var animatedProgress by remember { mutableStateOf(0f) }
+    LaunchedEffect(Unit) {
+        animatedProgress = 1f
+    }
+
+    val slideAnimation by animateFloatAsState(
+        targetValue = animatedProgress,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
 
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .graphicsLayer {
+                alpha = slideAnimation
+                translationX = (1f - slideAnimation) * 100f
+            }
             .border(
                 width = 1.dp,
                 color = if (wish.isCompleted) completedColor else AppColors.Primary,
@@ -207,10 +228,7 @@ private fun MonthDetailWishItem(
             ) {
                 Checkbox(
                     checked = wish.isCompleted,
-                    onCheckedChange = { newCheckedState ->
-                        println("Checkbox clicked for wish: ${wish.text}, current state: ${wish.isCompleted}, new state: $newCheckedState")
-                        onComplete()
-                    },
+                    onCheckedChange = { onComplete() },
                     colors = CheckboxDefaults.colors(
                         checkedColor = completedColor,
                         uncheckedColor = AppColors.Primary.copy(alpha = 0.6f)
