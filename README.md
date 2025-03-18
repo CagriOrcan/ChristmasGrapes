@@ -15,7 +15,9 @@
   <a href="#license">License</a>
 </p>
 
-Christmas Grapes is a unique application that helps you generate and track your wishes throughout the year. Inspired by the tradition of making wishes for each month, this app allows users to generate AI-powered wishes, save their personal wishes, and review them over time.
+ChristmasGrapes is a Kotlin Multiplatform application that helps you make wishes and track them throughout the year. It's like New Year's resolutions but more fun and interactive!
+
+Generate and track your wishes throughout the year. Inspired by the tradition of making wishes for each month, this app allows users to generate AI-powered wishes, save their personal wishes, and review them over time.
 
 This is a Kotlin Multiplatform project that uses 100% Compose UI and targets:
 1. Android
@@ -137,7 +139,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/CagriOrcan">Çağrı Orcan</a>
+  Made by <a href="https://github.com/CagriOrcan">Çağrı Orcan</a>
 </p>
 
 <p align="center">
