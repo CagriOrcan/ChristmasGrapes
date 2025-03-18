@@ -1,4 +1,4 @@
-# 🎄 Christmas Grapes AI 🍇
+# 🎄 Christmas Grapes: AI Wishes  🍇
 
 <p align="center">
   <b>Make wishes, track progress, and watch your dreams become reality throughout the year!</b>
