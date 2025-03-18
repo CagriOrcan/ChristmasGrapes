@@ -9,7 +9,18 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -18,11 +29,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Pending
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -30,16 +50,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import christmasgrapes.composeapp.generated.resources.Res
 import christmasgrapes.composeapp.generated.resources.snowy
 import org.jetbrains.compose.resources.painterResource
 import org.lamysia.christmasgrapes.model.Wish
 import org.lamysia.christmasgrapes.ui.theme.AppColors
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Composable
 fun SummaryScreen(
@@ -134,8 +150,8 @@ fun SummaryScreen(
                         // Progress Ring
                         Box(
                             modifier = Modifier
-                                .size(200.dp)
-                                .padding(8.dp),
+                                .size(150.dp)
+                                .padding(4.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             ProgressRing(
@@ -148,12 +164,12 @@ fun SummaryScreen(
                             ) {
                                 Text(
                                     text = "${wishes.size}",
-                                    style = MaterialTheme.typography.displayMedium,
+                                    style = MaterialTheme.typography.displaySmall,
                                     color = AppColors.Primary
                                 )
                                 Text(
                                     text = "Total Wishes",
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = AppColors.Primary.copy(alpha = 0.7f)
                                 )
                             }
@@ -188,16 +204,16 @@ fun SummaryScreen(
 
             // Wishes Lists
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(bottom = 16.dp)
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                contentPadding = PaddingValues(bottom = 8.dp)
             ) {
                 if (completedWishes.isNotEmpty()) {
                     item {
-                        ListHeader(
+                       /* ListHeader(
                             title = "Completed Wishes",
                             count = completedWishes.size,
                             color = Color(0xFF4CAF50)
-                        )
+                        )*/
                     }
                     items(completedWishes) { wish ->
                         CompletedWishItem(wish = wish)
@@ -206,12 +222,11 @@ fun SummaryScreen(
 
                 if (pendingWishes.isNotEmpty()) {
                     item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        ListHeader(
+                       /* ListHeader(
                             title = "Pending Wishes",
                             count = pendingWishes.size,
                             color = Color(0xFFFFA726)
-                        )
+                        )*/
                     }
                     items(pendingWishes) { wish ->
                         PendingWishItem(wish = wish)
@@ -324,7 +339,8 @@ private fun ListHeader(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = Color.White
+            color = color,
+            fontWeight = FontWeight.SemiBold
         )
         Box(
             modifier = Modifier
@@ -334,7 +350,8 @@ private fun ListHeader(
             Text(
                 text = count.toString(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = color
+                color = color,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -348,7 +365,7 @@ private fun CompletedWishItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.Background.copy(alpha = 0.95f)
         ),
@@ -357,7 +374,7 @@ private fun CompletedWishItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -378,12 +395,10 @@ private fun CompletedWishItem(
                         modifier = Modifier.size(20.dp)
                     )
                 }
-                
-                Spacer(modifier = Modifier.width(12.dp))
-                
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = wish.text,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF4CAF50)
                 )
             }
@@ -399,7 +414,7 @@ private fun PendingWishItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.Background.copy(alpha = 0.95f)
         ),
@@ -430,11 +445,11 @@ private fun PendingWishItem(
                     )
                 }
                 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 
                 Text(
                     text = wish.text,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFFFFA726)
                 )
             }
