@@ -76,8 +76,7 @@ fun HomeScreen(
     var selectedMonthIndex by remember { mutableStateOf(0) }
     var generatedWishText by remember { mutableStateOf<String?>(null) }
     var showTapHint by remember { mutableStateOf(true) }
-    
-    // Animation states
+
     val shakeController = rememberInfiniteTransition()
     val shake by shakeController.animateFloat(
         initialValue = 0f,
@@ -88,7 +87,6 @@ fun HomeScreen(
         )
     )
 
-    // Pulse animation for the grapes
     val pulseAnim = rememberInfiniteTransition()
     val scale by pulseAnim.animateFloat(
         initialValue = 1f,
@@ -99,7 +97,6 @@ fun HomeScreen(
         )
     )
 
-    // Fade animation for the hint text
     val hintAlpha by animateFloatAsState(
         targetValue = if (showTapHint) 1f else 0f,
         animationSpec = tween(500)
@@ -128,7 +125,6 @@ fun HomeScreen(
             contentScale = ContentScale.Crop
         )
 
-        // Tap hint text
         AnimatedVisibility(
             visible = showTapHint,
             enter = fadeIn() + slideInVertically { it },
@@ -163,7 +159,7 @@ fun HomeScreen(
             }
         }
 
-        // Grapes with animations
+        // Grapes
         Box(
             modifier = Modifier
                 .align(Alignment.Center)

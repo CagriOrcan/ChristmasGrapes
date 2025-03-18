@@ -218,7 +218,6 @@ fun MonthDetailScreen(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Month title with emoji
                     Text(
                         text = "✨ $monthName Wishes ✨",
                         style = MaterialTheme.typography.titleLarge,
@@ -287,8 +286,7 @@ fun MonthDetailScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Section labels with different colors for completed and pending
+
             if (wishes.any { it.isCompleted }) {
                /* SectionLabel(
                     title = "Completed Wishes",
@@ -310,10 +308,8 @@ fun MonthDetailScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Wishes List with staggered animation
             val rememberScrollState = rememberScrollState()
-            
-            // Reset scroll position when trigger changes
+
             LaunchedEffect(scrollToTopTrigger) {
                 rememberScrollState.scrollTo(0)
             }
@@ -322,7 +318,7 @@ fun MonthDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp)
             ) {
-                // First show completed wishes
+
                 val completedWishesList = wishes.filter { it.isCompleted }
                 if (completedWishesList.isNotEmpty()) {
                     itemsIndexed(completedWishesList) { index, wish ->
@@ -334,8 +330,7 @@ fun MonthDetailScreen(
                         )
                     }
                 }
-                
-                // Then show pending wishes
+
                 val pendingWishesList = wishes.filter { !it.isCompleted }
                 if (pendingWishesList.isNotEmpty()) {
                     itemsIndexed(pendingWishesList) { index, wish ->
@@ -564,12 +559,11 @@ private fun MonthDetailWishItem(
     animationDelay: Long = 0L,
     modifier: Modifier = Modifier
 ) {
-    val completedColor = Color(0xFF4CAF50) // Material Green
-    val pendingColor = AppColors.PendingColor   // Material Orange
+    val completedColor = Color(0xFF4CAF50)
+    val pendingColor = AppColors.PendingColor
 
     var animatedProgress by remember { mutableStateOf(0f) }
-    
-    // Staggered animation on first appearance
+
     LaunchedEffect(Unit) {
         delay(animationDelay)
         animatedProgress = 1f
@@ -613,8 +607,8 @@ private fun MonthDetailWishItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Wish icon based on completion state
-                // Checkbox with ripple effect
+
+                // Wish icon
                 IconButton(
                     onClick = onComplete,
                     modifier = Modifier.size(40.dp)
@@ -628,6 +622,7 @@ private fun MonthDetailWishItem(
                         )
                     )
                 }
+
             // Action buttons row
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -685,8 +680,6 @@ private fun MonthDetailWishItem(
 fun MutableInteractionSource.collectIsHoveredAsState(): State<Boolean> {
     val isHovered = remember { mutableStateOf(false) }
     LaunchedEffect(this) {
-        // In case of web target this would actually track hover state
-        // For now we'll just return false
     }
     return isHovered
 } 

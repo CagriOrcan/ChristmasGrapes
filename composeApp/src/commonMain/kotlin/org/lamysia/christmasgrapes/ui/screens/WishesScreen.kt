@@ -436,7 +436,7 @@ private fun MonthCard(
                     color = AppColors.Primary
                 )
                 Text(
-                    text = "Wishes",
+                    text = if(wishes.size == 1) "Wish" else "Wishes",
                     style = MaterialTheme.typography.bodyMedium,
                     color = AppColors.Primary.copy(alpha = 0.7f)
                 )
