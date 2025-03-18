@@ -167,8 +167,8 @@ fun WishesScreen(
     val animationProgress by animateFloatAsState(
         targetValue = if (selectedMonth != null) 1f else 0f,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessHigh
         )
     )
 
