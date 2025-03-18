@@ -11,4 +11,5 @@ object AppColors {
     val PrimaryDark = Color(0xFF8E0413)
     val Surface = Color(0xFFDCDFE5)
     val Transparent = Color(0x0FFFFFF)
+    val PendingColor = Color(0xFFFFA726)
 }
